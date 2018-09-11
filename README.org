@@ -1,5 +1,5 @@
 * About
-This is a python script used to generate Chinese student information include name, gender, id, class , birthday, province and race.
+This is a python script used to generate Chinese student information including name, gender, id, class , birthday, province and race.
 
 * Character
 Note that the scipt won't save the result as a new file every time you run it. It will append on the old file.
