@@ -1,0 +1,19 @@
+** About
+This is a python scipt used to judge if given images are the same.
+
+The class ~DHash~ is written by another person. Here it's its' link:[[p][hjaurum/DHash]]
+
+It has three options now:
+1. compare one image with the other
+2. compare one image with images in a folder
+3. compare images in a folder with the others in another folder
+
+** More
+What I want to mention is that it may take a lot time to run it if you choose the option 3. I have tested it for comparing 15 images in one folder with 613 images in another folder and it took me more than 6 minitues to get the result.
+
+** Improvement
+1. I originally wanted to use the Factory Pattern in my class Menu. However I'm not so familiar with class in Python. Finally, I gave up the idea.
+2. After running the script, there may exist an annoying tk window. This could be the reason that I didn't realise =tk.Tk()= in my code.
+
+
+
