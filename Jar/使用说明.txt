@@ -1,8 +1,0 @@
-使用说明
-　　很多人都困惑POI那么多Jar到底应该导入哪一个。
-　　实际上很多时候我们只利用POI来操作Excel。甚至只用xls这一种格式。
-　　那么就没有必要全部都导入了。具体应该使用哪个JAR包请参考以下内容：
-　　当我们只要使用xls格式时、只要导入poi-version-yyyymmdd.jar就可以了；
-　　当我们还要使用xlsx格式、还要导入poi-ooxml-version-yyyymmdd.jar；
-　　至于poi-ooxml-schemas-version-yyyymmdd.jar这个jar基本不太会用到的；
-　　当我们需要操作word、ppt、viso、outlook等时需要用到poi-scratchpad-version-yyyymmdd.jar
