@@ -1,0 +1,12 @@
+* About
+This is a python script used to generate Chinese student information including name, gender, id, class , birthday, province and race.
+
+* Character
+Note that the scipt won't save the result as a new file every time you run it. It will append on the old file.
+
+* Folder Structure
+~material~ folder contains some txt files containing information about possible student's surname, female name, male name, province name in China and 56 races in China.
+
+~record~ folder is used to record the id that has been generated.
+
+~result~ folder is used to store the generated result.
