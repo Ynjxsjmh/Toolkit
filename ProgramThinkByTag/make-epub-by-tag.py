@@ -6,6 +6,7 @@ import os
 from zipfile import *
 import re
 import traceback
+from datetime import datetime
 from bs4 import BeautifulSoup
 
 
@@ -39,6 +40,11 @@ def main() :
         with open('program-think.ncx', 'w') as f:
             f.write(ncx)
         zf.write('program-think.ncx')
+
+        opf = create_opf(links, images)
+        with open('program-think.opf', 'w') as f:
+            f.write(opf)
+        zf.write('program-think.opf')
 
         zf.close()
 
@@ -161,6 +167,79 @@ def add_folder(zf, folder, count, target_files, target_images) :
         return None
     else :
         return count
+
+
+def create_opf(links, images):
+    year = datetime.today().strftime('%Y')
+    month = datetime.today().strftime('%m')
+    today = datetime.today().strftime('%Y-%m-%d')
+    metadata = """
+        <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:title>编程随想的博客</dc:title>
+        <dc:identifier id="BookId" opf:scheme="URI">http://program-think.blogspot.com/{0}/{1}/</dc:identifier>
+        <dc:language>zh</dc:language>
+        <dc:creator opf:role="aut">编程随想</dc:creator>
+        <dc:publisher>编程随想</dc:publisher>
+        <dc:description>本书制作于 {2}
+        （正常情况下，每个月都会更新，以包含俺博客上的所有博文）。
+        要想【自动】获取俺博客的离线版本，请参见本电子书首页上的介绍（基于 BT Sync 自动同步）。
+        </dc:description>
+        <dc:subject>个人博客</dc:subject>
+        <dc:source>http://program-think.blogspot.com/</dc:source>
+        <dc:date opf:event="publication">{3}</dc:date>
+        <dc:rights>本博客所有的原创文章，作者皆保留版权。转载博文必须包含本声明，保持博文的完整，并以超链接形式注明作者“编程随想”和该博文的原始网址</dc:rights>
+        <dc:contributor></dc:contributor>
+        <dc:type></dc:type>
+        <dc:format></dc:format>
+        <dc:relation></dc:relation>
+        <dc:coverage></dc:coverage>
+        <dc:builder>Script by program.think@gmail.com</dc:builder>
+        <meta name="cover" content="cover-image" />
+        </metadata>
+        """.format(year, month, today, today)
+
+    itemref = ""
+    idref = "<itemref idref=\"post-{0}\" linear=\"yes\"/>\n"
+
+    item = ""
+    appli_template = "<item id=\"post-{0}\" href=\"{1}\" media-type=\"application/xhtml+xml\" />\n"
+    image_template = "<item id=\"{0}\" href=\"{1}\" media-type=\"image/jpeg\" />\n"
+
+    for link in links:
+        itemref += idref.format(link[2:].replace("\\", "-").replace(".html", ""))
+        item += appli_template.format(link[2:].replace("\\", "-").replace(".html", ""), link)
+
+    for image in images:
+        item += image_template.format(image.replace("../", "").replace("/", "-"), image.replace("../", ""))
+
+    manifest = """
+        <manifest>
+        <item id="ncx" href="program-think.ncx" media-type="application/x-dtbncx+xml" />
+        <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" />
+        <item id="css" href="css/program-think.css" media-type="text/css" />
+        {0}
+        </manifest>
+        """.format(item)
+
+    spine = """
+        <spine toc="ncx">
+        {}
+        </spine>
+        """.format(itemref)
+
+    opf = """
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId">
+        {0}
+        {1}
+        {2}
+        <guide>
+        <reference type="cover" title="封面" href="index.html" />
+        </guide>
+        </package>
+        """.format(metadata, manifest, spine)
+
+    return opf
 
 
 def create_ncx(book_name, links, titles):
