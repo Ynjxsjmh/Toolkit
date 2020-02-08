@@ -89,14 +89,6 @@ def get_all_tags(folder):
         all_images.append(images)
         all_titles.append(titles)
 
-        print("----------------")
-        print(titles)
-        print("----------------")
-        print(links)
-        print("----------------")
-        print(images)
-        print("----------------")
-
         print("Collect tag {} Done".format(tag))
 
     return tags, all_links, all_images, all_titles
