@@ -157,10 +157,10 @@ def add_folder(zf, folder, count, target_files, target_images):
         else:
             pass
 
-    if info :
+    if info:
         print(str(count))
         return None
-    else :
+    else:
         return count
 
 
