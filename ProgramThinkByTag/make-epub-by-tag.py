@@ -11,7 +11,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 
-def main() :
+def main():
     cwd = os.path.dirname(os.path.abspath(sys.argv[0]))
     os.chdir(cwd)
 
@@ -96,7 +96,7 @@ def get_all_tags(folder):
 
 def get_all_images(file):
     soup = BeautifulSoup(open(file, 'rb'), "html.parser")
-    images = soup.findAll('img', {"src":True})
+    images = soup.findAll('img', {"src" : True})
     all_images = []
     for image in images:
         all_images.append(image['src'])
@@ -120,32 +120,32 @@ def decode_tag(tag):
     return '.'.join(origin)
 
 
-def add_folder(zf, folder, count, target_files, target_images) :
+def add_folder(zf, folder, count, target_files, target_images):
     info = ''
 
-    if re.match(r'^\.(?:/|\\)20\d{2}$', folder) :
+    if re.match(r'^\.(?:/|\\)20\d{2}$', folder):
         info = folder[-4:]
-    elif re.match(r'^\.(?:/|\\)(?:archive|images|tags)$', folder) :
+    elif re.match(r'^\.(?:/|\\)(?:archive|images|tags)$', folder):
         info = folder.split(os.sep)[-1]
-    if info :
+    if info:
         print("~~~~~~~~~~~"+info)
         count = 0
 
     children = os.listdir(folder)
     children.sort()
-    for name in children :
+    for name in children:
         name = os.path.join(folder, name)
 
-        if os.path.isdir(name) :
+        if os.path.isdir(name):
             count = add_folder(zf, name, count, target_files, target_images)
-        elif name in target_files :
+        elif name in target_files:
             zf.write(name)
         elif "images" in name and name.replace('\\', '/').replace('.', '../..') in target_images:
             zf.write(name)
 
-            if count is not None :
+            if count is not None:
                 count += 1
-                if (count % 10) == 0 :  # optimize
+                if (count % 10) == 0:  # optimize
                     sys.stdout.write(str(count)+' \r')
                     sys.stdout.flush()
         elif "css" in name:
@@ -286,10 +286,10 @@ def create_ncx(book_name, links, titles):
     return ncx
 
 
-if '__main__' == __name__ :
-    try :
+if '__main__' == __name__:
+    try:
         sys.exit(main())
-    except Exception as err :
+    except Exception as err:
         print('Error:\n' + str(err))
         traceback.print_exc()
         sys.exit(1)
