@@ -152,6 +152,8 @@ def add_folder(zf, folder, count, target_files, target_images) :
             zf.write(name)
         elif "META-INF" in name or "mimetype" in name:
             zf.write(name)
+        elif "cover" in name:
+            zf.write(name)
         else:
             pass
 
