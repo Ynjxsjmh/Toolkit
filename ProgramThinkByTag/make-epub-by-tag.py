@@ -174,36 +174,36 @@ def create_opf(links, images):
     month = datetime.today().strftime('%m')
     today = datetime.today().strftime('%Y-%m-%d')
     metadata = """
-        <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
-        <dc:title>编程随想的博客</dc:title>
-        <dc:identifier id="BookId" opf:scheme="URI">http://program-think.blogspot.com/{0}/{1}/</dc:identifier>
-        <dc:language>zh</dc:language>
-        <dc:creator opf:role="aut">编程随想</dc:creator>
-        <dc:publisher>编程随想</dc:publisher>
-        <dc:description>本书制作于 {2}
-        （正常情况下，每个月都会更新，以包含俺博客上的所有博文）。
-        要想【自动】获取俺博客的离线版本，请参见本电子书首页上的介绍（基于 BT Sync 自动同步）。
-        </dc:description>
-        <dc:subject>个人博客</dc:subject>
-        <dc:source>http://program-think.blogspot.com/</dc:source>
-        <dc:date opf:event="publication">{3}</dc:date>
-        <dc:rights>本博客所有的原创文章，作者皆保留版权。转载博文必须包含本声明，保持博文的完整，并以超链接形式注明作者“编程随想”和该博文的原始网址</dc:rights>
-        <dc:contributor></dc:contributor>
-        <dc:type></dc:type>
-        <dc:format></dc:format>
-        <dc:relation></dc:relation>
-        <dc:coverage></dc:coverage>
-        <dc:builder>Script by program.think@gmail.com</dc:builder>
-        <meta name="cover" content="cover-image" />
-        </metadata>
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:title>编程随想的博客</dc:title>
+    <dc:identifier id="BookId" opf:scheme="URI">http://program-think.blogspot.com/{0}/{1}/</dc:identifier>
+    <dc:language>zh</dc:language>
+    <dc:creator opf:role="aut">编程随想</dc:creator>
+    <dc:publisher>编程随想</dc:publisher>
+    <dc:description>本书制作于 {2}
+    （正常情况下，每个月都会更新，以包含俺博客上的所有博文）。
+    要想【自动】获取俺博客的离线版本，请参见本电子书首页上的介绍（基于 BT Sync 自动同步）。
+    </dc:description>
+    <dc:subject>个人博客</dc:subject>
+    <dc:source>http://program-think.blogspot.com/</dc:source>
+    <dc:date opf:event="publication">{3}</dc:date>
+    <dc:rights>本博客所有的原创文章，作者皆保留版权。转载博文必须包含本声明，保持博文的完整，并以超链接形式注明作者“编程随想”和该博文的原始网址</dc:rights>
+    <dc:contributor></dc:contributor>
+    <dc:type></dc:type>
+    <dc:format></dc:format>
+    <dc:relation></dc:relation>
+    <dc:coverage></dc:coverage>
+    <dc:builder>Script by program.think@gmail.com</dc:builder>
+    <meta name="cover" content="cover-image" />
+</metadata>
         """.format(year, month, today, today)
 
     itemref = ""
-    idref = "<itemref idref=\"post-{0}\" linear=\"yes\"/>\n"
+    idref = "    <itemref idref=\"post-{0}\" linear=\"yes\"/>\n"
 
     item = ""
-    appli_template = "<item id=\"post-{0}\" href=\"{1}\" media-type=\"application/xhtml+xml\" />\n"
-    image_template = "<item id=\"{0}\" href=\"{1}\" media-type=\"image/jpeg\" />\n"
+    appli_template = "    <item id=\"post-{0}\" href=\"{1}\" media-type=\"application/xhtml+xml\" />\n"
+    image_template = "    <item id=\"{0}\" href=\"{1}\" media-type=\"image/jpeg\" />\n"
 
     for link in links:
         itemref += idref.format(link[2:].replace("\\", "-").replace(".html", ""))
@@ -213,30 +213,30 @@ def create_opf(links, images):
         item += image_template.format(image.replace("../", "").replace("/", "-"), image.replace("../", ""))
 
     manifest = """
-        <manifest>
-        <item id="ncx" href="program-think.ncx" media-type="application/x-dtbncx+xml" />
-        <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" />
-        <item id="css" href="css/program-think.css" media-type="text/css" />
-        {0}
-        </manifest>
+<manifest>
+    <item id="ncx" href="program-think.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" />
+    <item id="css" href="css/program-think.css" media-type="text/css" />
+{0}
+</manifest>
         """.format(item)
 
     spine = """
-        <spine toc="ncx">
-        {}
-        </spine>
+<spine toc="ncx">
+{}
+</spine>
         """.format(itemref)
 
     opf = """
-        <?xml version="1.0" encoding="UTF-8" ?>
-        <package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId">
-        {0}
-        {1}
-        {2}
-        <guide>
-        <reference type="cover" title="封面" href="index.html" />
-        </guide>
-        </package>
+<?xml version="1.0" encoding="UTF-8" ?>
+<package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId">
+{0}
+{1}
+{2}
+<guide>
+    <reference type="cover" title="封面" href="index.html" />
+</guide>
+</package>
         """.format(metadata, manifest, spine)
 
     return opf
@@ -246,26 +246,28 @@ def create_ncx(book_name, links, titles):
     """
     .ncx 文件是目录文件
     """
+    year = datetime.today().strftime('%Y')
+    month = datetime.today().strftime('%m')
     head = """
-        <head>
-        <meta name="dtb:uid" content="http://program-think.blogspot.com/2020/01/" />
-        <meta name="dtb:depth" content="4" />
-        <meta name="dtb:totalPageCount" content="0" />
-        <meta name="dtb:maxPageNumber" content="0" />
-        <meta name="dtb:generator" content="Python script by program.think@gmail.com" />
-        <meta name="provider" content="program-think.blogspot.com" />
-        <meta name="right" content="本博客所有的原创文章，作者皆保留版权。转载博文必须包含本声明，保持博文的完整，并以超链接形式注明作者“编程随想”和该博文的原始网址" />
-        </head>
-        """
+<head>
+    <meta name="dtb:uid" content="http://program-think.blogspot.com/{0}/{1}/" />
+    <meta name="dtb:depth" content="4" />
+    <meta name="dtb:totalPageCount" content="0" />
+    <meta name="dtb:maxPageNumber" content="0" />
+    <meta name="dtb:generator" content="Python script by program.think@gmail.com" />
+    <meta name="provider" content="program-think.blogspot.com" />
+    <meta name="right" content="本博客所有的原创文章，作者皆保留版权。转载博文必须包含本声明，保持博文的完整，并以超链接形式注明作者“编程随想”和该博文的原始网址" />
+</head>
+        """.format(year, month)
 
     navPoint = ""
     navPoint_template = """
-      <navPoint id="book{0}" playOrder="{1}">
-         <navLabel>
+    <navPoint id="navPoint-{0}" playOrder="{1}">
+        <navLabel>
             <text>{2}</text>
-         </navLabel>
-         <content src="{3}"/>
-      </navPoint>
+        </navLabel>
+        <content src="{3}"/>
+    </navPoint>
       """
 
     play_id = 0
@@ -274,16 +276,16 @@ def create_ncx(book_name, links, titles):
         play_id = play_id + 1
 
     ncx = """
-       <?xml version="1.0" encoding="UTF-8"?>
-       <!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
-       <ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/" xml:lang="zh-CN">
-       {0}
-       <docTitle><text>{1}</text></docTitle>
-       <docAuthor><text>编程随想</text></docAuthor>
-       <navMap>
-       {2}
-       </navMap>
-       </ncx>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/" xml:lang="zh-CN">
+{0}
+<docTitle><text>{1}</text></docTitle>
+<docAuthor><text>编程随想</text></docAuthor>
+<navMap>
+{2}
+</navMap>
+</ncx>
        """.format(head, book_name, navPoint)
 
     return ncx
