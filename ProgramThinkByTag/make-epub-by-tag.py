@@ -5,6 +5,7 @@ import sys
 import os
 from zipfile import *
 import re
+import codecs
 import traceback
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -37,12 +38,12 @@ def main() :
             add_folder(zf, '.', None, links, images)
 
         ncx = create_ncx(book_name, links, titles)
-        with open('program-think.ncx', 'w') as f:
+        with codecs.open('program-think.ncx', 'w', 'utf-8-sig') as f:
             f.write(ncx)
         zf.write('program-think.ncx')
 
         opf = create_opf(book_name, links, images)
-        with open('program-think.opf', 'w') as f:
+        with codecs.open('program-think.opf', 'w', 'utf-8-sig') as f:
             f.write(opf)
         zf.write('program-think.opf')
 
