@@ -41,7 +41,7 @@ def main() :
             f.write(ncx)
         zf.write('program-think.ncx')
 
-        opf = create_opf(links, images)
+        opf = create_opf(book_name, links, images)
         with open('program-think.opf', 'w') as f:
             f.write(opf)
         zf.write('program-think.opf')
@@ -169,24 +169,24 @@ def add_folder(zf, folder, count, target_files, target_images) :
         return count
 
 
-def create_opf(links, images):
+def create_opf(book_name, links, images):
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
     today = datetime.today().strftime('%Y-%m-%d')
     metadata = """
 <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
-    <dc:title>编程随想的博客</dc:title>
-    <dc:identifier id="BookId" opf:scheme="URI">http://program-think.blogspot.com/{0}/{1}/</dc:identifier>
+    <dc:title>{0}</dc:title>
+    <dc:identifier id="BookId" opf:scheme="URI">http://program-think.blogspot.com/{1}/{2}/</dc:identifier>
     <dc:language>zh</dc:language>
     <dc:creator opf:role="aut">编程随想</dc:creator>
     <dc:publisher>编程随想</dc:publisher>
-    <dc:description>本书制作于 {2}
+    <dc:description>本书制作于 {3}
     （正常情况下，每个月都会更新，以包含俺博客上的所有博文）。
     要想【自动】获取俺博客的离线版本，请参见本电子书首页上的介绍（基于 BT Sync 自动同步）。
     </dc:description>
     <dc:subject>个人博客</dc:subject>
     <dc:source>http://program-think.blogspot.com/</dc:source>
-    <dc:date opf:event="publication">{3}</dc:date>
+    <dc:date opf:event="publication">{4}</dc:date>
     <dc:rights>本博客所有的原创文章，作者皆保留版权。转载博文必须包含本声明，保持博文的完整，并以超链接形式注明作者“编程随想”和该博文的原始网址</dc:rights>
     <dc:contributor></dc:contributor>
     <dc:type></dc:type>
@@ -196,7 +196,7 @@ def create_opf(links, images):
     <dc:builder>Script by program.think@gmail.com</dc:builder>
     <meta name="cover" content="cover-image" />
 </metadata>
-        """.format(year, month, today, today)
+        """.format(book_name, year, month, today, today)
 
     itemref = ""
     idref = "    <itemref idref=\"post-{0}\" linear=\"yes\"/>\n"
