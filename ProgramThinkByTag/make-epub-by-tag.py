@@ -25,7 +25,7 @@ def main():
         print(cwd)
         book_name = '编程随想 - {}'.format(decode_tag(tag))
         epub_file = '{}.epub'.format(book_name)
-        if os.path.exists(epub_file) :
+        if os.path.exists(epub_file):
             os.remove(epub_file)
 
         print('\ngenerating {}'.format(epub_file))
@@ -33,7 +33,7 @@ def main():
         zf = ZipFile(epub_file, 'w', ZIP_DEFLATED)
         os.chdir(cwd)
 
-        for folder in ['./conf/', '../../html/'] :
+        for folder in ['./conf/', '../../html/']:
             os.chdir(os.path.join(cwd, folder))
             add_folder(zf, '.', None, links, images)
 
