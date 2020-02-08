@@ -260,12 +260,12 @@ def create_ncx(book_name, links, titles):
 
     navPoint = ""
     navPoint_template = """
-      <navPoint id="{0}" playOrder="{1}">
+      <navPoint id="book{0}" playOrder="{1}">
          <navLabel>
             <text>{2}</text>
          </navLabel>
          <content src="{3}"/>
-      </navPoint>\n
+      </navPoint>
       """
 
     play_id = 0
