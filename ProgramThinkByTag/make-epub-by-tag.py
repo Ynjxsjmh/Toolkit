@@ -165,6 +165,9 @@ def add_folder(zf, folder, count, target_files, target_images):
 
 
 def create_opf(book_name, links, images):
+    """
+    https://github.com/krisztianmukli/epub-boilerplate/wiki/The-content.opf-File
+    """
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
     today = datetime.today().strftime('%Y-%m-%d')
@@ -240,6 +243,7 @@ def create_opf(book_name, links, images):
 def create_ncx(book_name, links, titles):
     """
     .ncx 文件是目录文件
+    https://github.com/krisztianmukli/epub-boilerplate/wiki/The-toc.ncx-File
     """
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
