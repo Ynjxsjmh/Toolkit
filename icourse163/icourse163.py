@@ -173,3 +173,63 @@ def get_student_score_detail():
 if __name__ == "__main__":
     session = get_login_session()
     http_session_id = session.cookies["NTESSTUDYSI"]
+
+    # 答题记录 - 单元测验
+    # http://www.icourse163.org/learn/JLU-62001?tid=1206772205&_trace_c_p_k2_=78e55f8bff9d4be3bda1161d877f18bc#/learn/quizscore?id=1220061754&aid=1481357597
+
+    request_quiz_result_url = "http://www.icourse163.org/dwr/call/plaincall/MocQuizBean.getQuizPaperDto.dwr"
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'MocQuizBean',
+        'c0-methodName': 'getQuizPaperDto',
+        'c0-id': 0,
+        'c0-param0': id,
+        'c0-param1': aid,
+        'c0-param2': 'true',
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    # 答题记录 - 单元作业
+    # http://www.icourse163.org/learn/JLU-62001?tid=1206772205&_trace_c_p_k2_=40493107bde44512910441163f9bdac6#/learn/ojhw?id=1220061748&aid=1466334466&isCheck=1
+    request_quiz_submit_records = "http://www.icourse163.org/dwr/call/plaincall/YocOJQuizBean.adminGetOjQuestionSubmitRecords.dwr"
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'YocOJQuizBean',
+        'c0-methodName': 'adminGetOjQuestionSubmitRecords',
+        'c0-id': 0,
+        'c0-param0': id,
+        'c0-param1': 'false',
+        'c0-param2': aid,
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    # 答题记录 - 课程考试（客观题）
+    # http://www.icourse163.org/learn/JLU-62001?tid=1206772205&_trace_c_p_k2_=d66580f2348144909fb0175846cc712c#/learn/examObjectScore?id=1220061796&aid=1553103973&isCheck=1
+    # 同 答题记录 - 单元测验
+
+    # 答题记录 - 课程考试（主观题）
+    # http://www.icourse163.org/learn/JLU-62001?tid=1206772205&_trace_c_p_k2_=b28950ebdc3f4d02b0d3bb90b5c2cf9e#/learn/examOj?id=1220061797&aid=1544038649&isCheck=1
+    # 同 答题记录 - 单元作业
+
+    ask_video_url = "http://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getStudentScoresByExamId.dwr"
+
+#    resp = session.post(url=ask_video_url, data=payload).text
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'CourseBean',
+        'c0-methodName': 'getLastLearnedMocTermDto',
+        'c0-id': 0,
+        'c0-param0': 1206772205,
+        'batchId': random.randint(1000000000000, 20000000000000)
+     }
+    cs_url = 'http://www.icourse163.org/dwr/call/plaincall/CourseBean.getLastLearnedMocTermDto.dwr'
+#    rdata = session.post(cs_url, data=payload, timeout=None).text
