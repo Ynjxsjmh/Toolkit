@@ -36,7 +36,7 @@ def get_terms():
         result = dict(map(lambda x: x.split('='), line[:-1].split(';')))
 
         try:
-            result["term_id"]
+            result["course_id"]
             result["from_term_id"]
             result["id"]
             result["school_id"]
