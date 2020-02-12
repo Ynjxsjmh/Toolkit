@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from login import get_login_session
 
 from course import Course
-from term_score_summay import TermScoreSummary
+from term_score_summary import TermScoreSummary
 from test import Test
 
 
