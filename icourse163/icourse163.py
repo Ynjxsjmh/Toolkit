@@ -5,6 +5,7 @@ import random
 from bs4 import BeautifulSoup
 from login import get_login_session
 
+from term import Term
 from course import Course
 from term_score_summary import TermScoreSummary
 from test import Test
@@ -28,23 +29,23 @@ def get_terms():
 
     object_clear_regex = re.compile(r"s\d+\.")
 
-    course_list = []
+    term_list = []
 
     for line in response.splitlines():
         line = object_clear_regex.sub("", line)
         result = dict(map(lambda x: x.split('='), line[:-1].split(';')))
 
         try:
-            result["course_id"]
+            result["term_id"]
             result["from_term_id"]
             result["id"]
             result["school_id"]
-            course = Course(result)
-            course_list.append(course)
+            term = Term(result)
+            term_list.append(term)
         except KeyError:
             pass
 
-    return course_list
+    return term_list
 
 
 def get_term_statistic():
