@@ -1,7 +1,14 @@
+from util import camel_to_snake
+
 
 class TermScoreSummary(object):
-    def __init__(self):
-        pass
+    def __init__(self, *initial_data, **kwargs):
+        for dictionary in initial_data:
+            for key in dictionary:
+                setattr(self, camel_to_snake(key), dictionary[key])
+
+        for key in kwargs:
+            setattr(self, camel_to_snake(key), kwargs[key])
 
     @property
     def summary_id(self):
