@@ -71,8 +71,8 @@ def get_term_statistic():
         result = dict(map(lambda x: x.split('='), line[:-1].split(';')))
 
         try:
-            result["chapterId"]
-            result["examId_id"]
+            result["chapter_d"]
+            result["exam_id"]
             result["id"]
             result["term_id"]
             test = Test(result)
