@@ -2,6 +2,49 @@ from util import camel_to_snake
 
 
 class Test(object):
+    """
+    'allow_upload': 'null',
+    'avg_score': '8.29',
+    'chapter_id': '1209858110',
+    'deadline': '1577028600000',
+    'description': '"本节内容属于补充内容，因 第九讲：函数进阶 & 递归程序设计--编程题--拓展篇（不计入成绩）的第一题样例有错，大家可以在此测验一下！"',
+    'draft_status': '0',
+    'evaluate_end': 'null',
+    'evaluate_judge_type': '3',
+    'evaluate_need_train': 'null',
+    'evaluate_score_release_time': '1577115000000',
+    'evaluate_start': 'null',
+    'exam_id': '-1',
+    'is_random': 'null',
+    'mutual_evaluated': 'true',
+    'obj_total_score': '0.0',
+    'objective_score_type': '2',
+    'oj_question_trytime': 'null',
+    'position_in_exam': 'null',
+    'random_setting': 'null',
+    'release_time': '1575687600000',
+    'sbj_total_score': '10.0',
+    'score_pub_status': '1',
+    'show_analysis': 'null',
+    'submit_test_count': '215',
+    'task_status': '"end"',
+    'term_id': '1206772205',
+    'test_time': 'null',
+    'total_score': '10.0',
+    'user_effect_status': 'null',
+    'user_score': 'null',
+    'user_submit_status': 'null',
+    'analyse_setting': 'null',
+    'gmt_create': '1575686616821',
+    'gmt_modified': '1580886350938',
+    'id': '1221659431',
+    'name': '"第九讲：函数进阶 & 递归程序设计--编程题--拓展篇--递归求解最大字符串（不计入成绩）"',
+    'objective_q_list': 'null',
+    'subjective_q_list': 'null',
+    'test_random_setting': 'null',
+    'trytime': 'null',
+    'type': '7'
+    """
     def __init__(self, *initial_data, **kwargs):
         for dictionary in initial_data:
             for key in dictionary:
