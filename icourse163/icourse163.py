@@ -74,8 +74,16 @@ def get_term_statistic():
     for line in response.splitlines():
         line = object_clear_regex.sub("", line)
         result = dict(map(lambda x: x.split('='), line[:-1].split(';')))
-        test = Test(result)
-        test_list.append(test)
+
+        try:
+            result["chapterId"]
+            result["examId_id"]
+            result["id"]
+            result["term_id"]
+            test = Test(result)
+            test_list.append(test)
+        except KeyError:
+            pass
 
     return test_list
 
