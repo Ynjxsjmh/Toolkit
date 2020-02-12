@@ -52,6 +52,34 @@ def get_terms():
     return course_list
 
 
+def get_term_statistic():
+
+    request_term_status_url = "https://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getMocTermDataStatisticDto.dwr"
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'MocScoreManagerBean',
+        'c0-methodName': 'getMocTermDataStatisticDto',
+        'c0-id': 0,
+        'c0-param0': term_id,
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    response = session.post(url=request_term_status_url, data=payload).text
+
+    object_clear_regex = re.compile(r"s\d+\.")
+    test_list = []
+
+    for line in response.splitlines():
+        line = object_clear_regex.sub("", line)
+        result = dict(map(lambda x: x.split('='), line[:-1].split(';')))
+        test = Test(result)
+        test_list.append(test)
+
+    return test_list
+
+
 if __name__ == "__main__":
     session = get_login_session()
     http_session_id = session.cookies["NTESSTUDYSI"]
