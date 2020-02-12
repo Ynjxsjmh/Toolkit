@@ -2,6 +2,34 @@ from util import camel_to_snake
 
 
 class TermScoreSummary(object):
+    """
+    'summary_id': 1223122009
+    'term_id': 1202772305
+    'member_id': 1401292023
+    'test_score': 146.0
+    'assignment_score': 480.0
+    'exam_score': 120.0
+    'discuss_score': 100.0
+    'reply_count': 31
+    'vote_count': 1
+    'outside_score': None
+    'total_score': 100.0
+    'bonus_score': None
+    'total_score_with_bonus': 100.0
+    'cert_type_now': 0
+    'nick_name': '123晓明'
+    'real_name': '晓明'
+    'student_number': None
+    'group_id': None
+    'group_name': None
+    'school_name': None
+    'departments': None
+    'professional': None
+    'clazz': None
+    'comment': None
+    'level': '优秀'
+    'final_score': 100.0
+    """
     def __init__(self, *initial_data, **kwargs):
         for dictionary in initial_data:
             for key in dictionary:
