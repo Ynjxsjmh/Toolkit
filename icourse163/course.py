@@ -1,4 +1,4 @@
-from util import camel_to_snake
+from icourse163.util import camel_to_snake
 
 
 class Course(object):
@@ -49,3 +49,54 @@ class Course(object):
 
         for key in kwargs:
             setattr(self, camel_to_snake(key), kwargs[key])
+
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, id):
+        self.__id = id
+        self.course_id = id
+
+    @property
+    def course_id(self):
+        return self.__course_id
+
+    @course_id.setter
+    def course_id(self, course_id):
+        self.__course_id = course_id
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+        self.course_name = name
+
+    @property
+    def course_name(self):
+        return self.__course_name
+
+    @course_name.setter
+    def course_name(self, course_name):
+        self.__course_name = course_name
+
+    @property
+    def short_name(self):
+        return self.__short_name
+
+    @short_name.setter
+    def short_name(self, short_name):
+        self.__short_name = short_name
+        self.__course_short_name = short_name
+
+    @property
+    def course_short_name(self):
+        return self.__course_short_name
+
+    @course_short_name.setter
+    def course_short_name(self, course_short_name):
+        self.__course_short_name = course_short_name
