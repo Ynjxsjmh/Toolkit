@@ -9,7 +9,8 @@ class DBConnection(object):
     # https://medium.com/better-programming/singleton-in-python-5eaa66618e3d
 
     def __init__(self):
-        with open("../dbconfig.txt", "r") as f:
+        print("Connecting database...")
+        with open("dbconfig.txt", "r") as f:
             text = f.readline()
 
         config = text[:-1].split(",")
@@ -17,6 +18,7 @@ class DBConnection(object):
                                               passwd=config[2], db=config[3])
 
         self.dbCursor = self.dbConnection.cursor()
+        print("Connected")
 
     def get_connection(self):
         return self.dbConnection
