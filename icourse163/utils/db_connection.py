@@ -30,6 +30,9 @@ class DBConnection(object):
 
         return result
 
+    def commit(self):
+        self.dbConnection.commit()
+
     def __del__(self):
         self.dbCursor.close()
         self.dbConnection.close()
