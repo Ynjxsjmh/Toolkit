@@ -4,16 +4,18 @@ import requests
 import random
 from bs4 import BeautifulSoup
 
-from icourse163.login import get_login_session
+from icourse163.utils.login import get_login_session
 
-from icourse163.term import Term
-from icourse163.course import Course
-from icourse163.term_score_summary import TermScoreSummary
-from icourse163.test import Test
+from icourse163.domain.term import Term
+from icourse163.domain.test import Test
+from icourse163.domain.answer import Answer
+from icourse163.domain.course import Course
+from icourse163.domain.term_score_summary import TermScoreSummary
 
-from icourse163.dao.course_dao import CourseDao
 from icourse163.dao.term_dao import TermDao
 from icourse163.dao.test_dao import TestDao
+from icourse163.dao.answer_dao import AnswerDao
+from icourse163.dao.course_dao import CourseDao
 
 
 session = get_login_session()
@@ -136,8 +138,7 @@ def get_all_students_score():
     return summary_list
 
 
-def get_student_score_detail():
-    # http://www.icourse163.org/collegeAdmin/termManage/1206772205.htm#/tp/manageStudent?t=2&mid=1401331329
+def save_student_score_detail(member_id, term_id):
     request_student_score_detail_url = "http://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getSingleStudentScores.dwr"
 
     payload = {
@@ -154,16 +155,25 @@ def get_student_score_detail():
 
     response = session.post(url=request_student_score_detail_url, data=payload).text
 
-    # s13.achievementStatus=1;s13.applyConvertChannelStatus=null;s13.applyMoocStatus=0;s13.applyPassedTermId=null;s13.asynPrice=null;s13.bigPhotoUrl="http://edu-image.nosdn.127.net/E2A2D9422AE2D9E37C24A59A94984CB8.png?imageView&thumbnail=510y288&quality=100";s13.certApplyEndTime=null;s13.certApplyStartTime=null;s13.certNo=null;s13.certStatus=20;s13.chargeCertStatus=20;s13.chargeableCert=1;s13.closeVisableStatus=0;s13.copied=1;s13.copyRight=null;s13.copyTime=null;
-    # s13.courseId=62001;s13.courseName=null;s13.duration="";s13.endTime=1561563000000;s13.enrollCount=1763;s13.fromTermId=1003251017;s13.fromTermMode=0;s13.hasEnroll=true;s13.id=1206088220;s13.lectorPanels=s34;s13.lessonsCount=72;s13.mode=0;s13.orderPrice=null;s13.ordinaryEditors=null;s13.originMocTermCopyRight=null;s13.originalCourseChannel=null;s13.originalPrice=0.00;s13.price=0.00;s13.publishStatus=2;s13.schoolId=8008;s13.schoolPanel=null;s13.scoreCardDto=null;s13.selfMocTermCopyright=null;s13.specialChargeableTerm=false;s13.spocToOocStatus=0;s13.startTime=1553479200000;s13.syncPrice=null;
-    course_regex = re.compile(r".*achievementStatus=(?P<achievementStatus>\d+).*courseId=(?P<courseId>\d+).*endTime=(?P<endTime>\d+).*enrollCount=(?P<enrollCount>\d+).*fromTermId=(?P<fromTermId>\d+).*id=(?P<id>\d+).*lessonsCount=(?P<lessonsCount>\d+).*publishStatus=(?P<publishStatus>\d+).*schoolId=(?P<schoolId>\d+).*startTime=(?P<startTime>\d+)")
-    course_list = []
+    catch_pair_regex = re.compile(r's\d+\.([^=]+)=([^;]+);')
+    answer = None
+    answerDao = AnswerDao()
 
     for line in response.splitlines():
-        course_match = re.search(course_regex, line)
+        result = dict(re.findall(catch_pair_regex, line))
 
-        course = Course()
-        course.achievement_status = course_match.group("achievementStatus")
+        try:
+            if result["id"] == 'null':
+                continue
+            result["aid"]
+            result["answerer_id"]
+            result["exam_id"]
+            result["test_id"]
+            result["tid"]
+            answer = Answer(result)
+            answerDao.save(answer)
+        except KeyError:
+            pass
 
 
 if __name__ == "__main__":
