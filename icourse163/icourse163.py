@@ -3,15 +3,19 @@ import json
 import requests
 import random
 from bs4 import BeautifulSoup
-from login import get_login_session
 
-from term import Term
-from course import Course
-from term_score_summary import TermScoreSummary
-from test import Test
+from icourse163.login import get_login_session
+
+from icourse163.term import Term
+from icourse163.course import Course
+from icourse163.term_score_summary import TermScoreSummary
+from icourse163.test import Test
+
+from icourse163.dao.course_dao import CourseDao
+from icourse163.dao.term_dao import TermDao
 
 
-def get_terms():
+def save_terms():
     # https://www.icourse163.org/collegeAdmin/teacherPanel.htm#/agt?type=1
     request_terms_url = "https://www.icourse163.org/dwr/call/plaincall/PublishCourseBean.getTermsByTeacher.dwr"
     payload = {
@@ -29,23 +33,38 @@ def get_terms():
 
     object_clear_regex = re.compile(r"s\d+\.")
 
-    term_list = []
+    term = None
+    course = None
+    termDao = TermDao()
+    courseDao = CourseDao()
 
     for line in response.splitlines():
         line = object_clear_regex.sub("", line)
-        result = dict(map(lambda x: x.split('='), line[:-1].split(';')))
 
         try:
-            result["course_id"]
-            result["from_term_id"]
+            result = dict(map(lambda x: x.split('=', 1), line[:-1].split(';')))
+        except ValueError:
+            continue
+
+        try:
+            result["courseId"]
+            result["fromTermId"]
             result["id"]
-            result["school_id"]
+            result["schoolId"]
             term = Term(result)
-            term_list.append(term)
+            termDao.save(term)
         except KeyError:
             pass
 
-    return term_list
+        try:
+            result["id"]
+            result["schoolId"]
+            result["videoId"]
+            result["currentTermId"]
+            course = Course(result)
+            courseDao.save(course)
+        except KeyError:
+            pass
 
 
 def get_term_statistic():
