@@ -1,5 +1,7 @@
 import MySQLdb as connector
 from singleton_decorator import singleton
+import traceback
+import sys
 
 
 @singleton
@@ -24,9 +26,19 @@ class DBConnection(object):
         return self.dbConnection
 
     def execute_query(self, query):
-        self.dbCursor.execute(query)
+        result = None
 
-        result = self.dbCursor.fetchall()
+        try:
+            self.dbCursor.execute(query)
+            result = self.dbCursor.fetchall()
+        except connector.IntegrityError as e:
+            if "Duplicate entry" in str(e) and "PRIMARY" in str(e):
+                pass
+            else:
+                traceback.print_exc()
+        except Exception:
+            print(sys.exc_info()[0])
+            traceback.print_exc()
 
         return result
 
