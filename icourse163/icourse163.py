@@ -13,6 +13,11 @@ from icourse163.test import Test
 
 from icourse163.dao.course_dao import CourseDao
 from icourse163.dao.term_dao import TermDao
+from icourse163.dao.test_dao import TestDao
+
+
+session = get_login_session()
+http_session_id = session.cookies["NTESSTUDYSI"]
 
 
 def save_terms():
@@ -67,7 +72,7 @@ def save_terms():
             pass
 
 
-def get_term_statistic():
+def save_term_statistic(term_id):
 
     request_term_status_url = "https://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getMocTermDataStatisticDto.dwr"
     payload = {
@@ -83,24 +88,23 @@ def get_term_statistic():
 
     response = session.post(url=request_term_status_url, data=payload).text
 
-    object_clear_regex = re.compile(r"s\d+\.")
-    test_list = []
+    catch_pair_regex = re.compile(r's\d+\.([^=]+)=((?:"\[[^\]]+\]"|"<p.*</p>"|[^;]+));')
+
+    test = None
+    testDao = TestDao()
 
     for line in response.splitlines():
-        line = object_clear_regex.sub("", line)
-        result = dict(map(lambda x: x.split('='), line[:-1].split(';')))
+        result = dict(re.findall(catch_pair_regex, line))
 
         try:
-            result["chapter_d"]
+            result["chapter_id"]
             result["exam_id"]
             result["id"]
             result["term_id"]
             test = Test(result)
-            test_list.append(test)
+            testDao.save(test)
         except KeyError:
             pass
-
-    return test_list
 
 
 def get_all_students_score():
