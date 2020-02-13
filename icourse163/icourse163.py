@@ -16,6 +16,7 @@ from icourse163.dao.term_dao import TermDao
 from icourse163.dao.test_dao import TestDao
 from icourse163.dao.answer_dao import AnswerDao
 from icourse163.dao.course_dao import CourseDao
+from icourse.dao.summary_dao import SummaryDao
 
 
 session = get_login_session()
@@ -109,8 +110,7 @@ def save_term_statistic(term_id):
             pass
 
 
-def get_all_students_score():
-    # http://www.icourse163.org/collegeAdmin/termManage/1206772205.htm#/tp/manageStudent
+def save_all_students_score(term_id):
     request_student_score_url = "http://www.icourse163.org/mm-tiku/web/j/mocTermScoreSummaryRpcBean.getStudentScorePagination.rpc?csrfKey={}".format(http_session_id)
 
     form_data = {
@@ -128,14 +128,14 @@ def get_all_students_score():
     form_data["pSize"] = response["result"]["query"]["totleCount"]
     response = session.post(url=request_student_score_url, data=form_data).text
     response = json.loads(response)
-    summary_list = []
+
+    summary = None
+    summaryDao = SummaryDao()
 
     for summary in response["result"]["list"]:
         term_score_summary = TermScoreSummary(summary)
 
-        summary_list.append(term_score_summary)
-
-    return summary_list
+        summaryDao.save(term_score_summary)
 
 
 def save_student_score_detail(member_id, term_id):
