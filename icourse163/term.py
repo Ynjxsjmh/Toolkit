@@ -1,9 +1,9 @@
-from util import camel_to_snake
+from icourse163.util import camel_to_snake
 
 
 class Term(object):
     """
-    'achievement_status': '0'
+    'achievement_status': '0'        // 是否结束，0 即将开始，1 结束
     'apply_convert_channel_status': 'null'
     'apply_mooc_status': '0'
     'apply_passed_term_id': 'null'
@@ -19,18 +19,18 @@ class Term(object):
     'copied': '1'
     'copy_right': 'null'
     'copy_time': 'null'
-    'course_id': '72641'
+    'course_id': '72641'          // 课程 id
     'course_name': 'null'
     'duration': '""'
-    'end_time': '1590422400000'
-    'enroll_count': '281'
+    'end_time': '1590422400000'   // 结束时间
+    'enroll_count': '281'         // 包名人数
     'from_term_id': '1932142345'
     'from_term_mode': '0'
     'has_enroll': 'true'
-    'id': '1238916433'
+    'id': '1238916433'         // alais for term_id
     'json_content': '本课程面向无编程基础'
     'lector_panels': 's0'
-    'lessons_count': '0'
+    'lessons_count': '0'       // 课程数
     'mode': '0'
     'order_price': 'null'
     'ordinary_editors': 'null'
@@ -38,14 +38,14 @@ class Term(object):
     'original_course_channel': 'null'
     'original_price': '0.00'
     'price': '0.00'
-    'publish_status': '2'
-    'school_id': '2934'
+    'publish_status': '2'      // 发布状况
+    'school_id': '2934'        // 学校 id
     'school_panel': 'null'
     'score_card_dto': 'null'
     'self_moc_term_copyright': 'null'
     'special_chargeable_term': 'false'
     'spoc_to_ooc_status': '0'
-    'start_time': '1582336800000'
+    'start_time': '1582336800000'   // 开始时间
     'sync_price': 'null'
     """
 
@@ -80,6 +80,7 @@ class Term(object):
     @id.setter
     def id(self, id):
         self.__id = id
+        self.term_id = id
 
     @property
     def member_id(self):
