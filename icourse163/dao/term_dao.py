@@ -1,5 +1,4 @@
 from icourse163.utils.db_connection import DBConnection
-from icourse163.term import Term
 
 
 class TermDao(object):
@@ -24,4 +23,16 @@ class TermDao(object):
         result = db.execute_query(query)
         db.commit()
 
+        return result
+
+    def search_by_id(self, term_id):
+        db = DBConnection()
+        query = "SELECT * from term where termId = {}".format(term_id)
+        result = db.execute_query(query)
+        return result
+
+    def search_all(self):
+        db = DBConnection()
+        query = "SELECT * from term"
+        result = db.execute_query(query)
         return result

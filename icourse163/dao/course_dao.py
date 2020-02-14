@@ -1,5 +1,4 @@
 from icourse163.utils.db_connection import DBConnection
-from icourse163.course import Course
 
 
 class CourseDao(object):

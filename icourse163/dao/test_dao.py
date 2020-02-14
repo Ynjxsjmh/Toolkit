@@ -1,5 +1,4 @@
 from icourse163.utils.db_connection import DBConnection
-from icourse163.test import Test
 
 
 class TestDao(object):
