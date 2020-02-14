@@ -36,7 +36,7 @@ class SummaryDao(object):
         param.append(summary.level)
         param.append(summary.final_score)
 
-        query = "INSERT INTO summary (summaryId, termId, memberId, testScore, assignmentScore, examScore, discussScore, replyCount, voteCount, outsideScore, totalScore, bonusScore, totalScoreWithBonus, certTypeNow, nickName, realName, studentNumber, groupId, groupName, schoolName, departments, professional, clazz, comment, level, finalScore) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20}, {21}, {22}, {23}, {24}, {25});".format(*param)
+        query = "INSERT INTO summary (summaryId, termId, memberId, testScore, assignmentScore, examScore, discussScore, replyCount, voteCount, outsideScore, totalScore, bonusScore, totalScoreWithBonus, certTypeNow, nickName, realName, studentNumber, groupId, groupName, schoolName, departments, professional, clazz, comment, level, finalScore) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}');".format(*param)
 
         result = db.execute_query(query)
         db.commit()
