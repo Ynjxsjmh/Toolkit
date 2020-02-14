@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from icourse163.utils.login import get_login_session
 from icourse163.utils.util import most_common
 from icourse163.utils.util import raw_unicode_escape
+from icourse163.utils.util import get_key_value
 
 from icourse163.domain.term import Term
 from icourse163.domain.test import Test
@@ -99,7 +100,8 @@ def save_term_statistic(term_id):
 
     response = session.post(url=request_term_status_url, data=payload).text
 
-    catch_pair_regex = re.compile(r's\d+\.([^=]+)=((?:"\[[^\]]+\]"|"<p.*</p>"|[^;]+));')
+#    catch_pair_regex = re.compile(r's\d+\.([^\=]+)\=(([^"][^;]+)|(".*"));')
+#    tuple((m.group(1), m.group(2)) for m in re.finditer(catch_pair_regex, line))
 
     test = None
     question = None
@@ -107,15 +109,15 @@ def save_term_statistic(term_id):
     questionDao = QuestionDao()
 
     for line in response.splitlines():
-        result = dict(re.findall(catch_pair_regex, line))
-        print(result)
+        result = get_key_value(line)
 
         try:
             result["chapterId"]
             result["examId"]
             result["id"]
             result["termId"]
-#            print(result)
+            result["description"] = raw_unicode_escape(result["description"])
+            result["name"] = raw_unicode_escape(result["name"])
             test = Test(result)
             testDao.save(test)
         except KeyError:
@@ -125,6 +127,9 @@ def save_term_statistic(term_id):
             result["id"]
             result["testId"]
             result["optionsDetail"]
+            result["description"] = raw_unicode_escape(result["description"])
+            result["title"] = raw_unicode_escape(result["title"])
+            result["plainTextTitle"] = raw_unicode_escape(result["plainTextTitle"])
             question = Question(result)
             questionDao.save(question)
         except KeyError:
