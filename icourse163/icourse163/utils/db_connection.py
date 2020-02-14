@@ -17,7 +17,8 @@ class DBConnection(object):
 
         config = text[:-1].split(",")
         self.dbConnection = connector.Connect(host=config[0], user=config[1],
-                                              passwd=config[2], db=config[3])
+                                              passwd=config[2], db=config[3],
+                                              charset='utf8')
 
         self.dbCursor = self.dbConnection.cursor()
         print("Connected")
