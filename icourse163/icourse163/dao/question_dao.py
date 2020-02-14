@@ -28,7 +28,7 @@ class QuestionDao(object):
         param.append(question.title)
         param.append(question.type)
 
-        query = "INSERT INTO icourse163.question (id, allowUpload, description, gmtCreate, gmtModified, ojMemLimit, ojNeedInput, ojSupportedLanguage, ojTimeLimit, ojTryTime, options, optionsDetail, plainTextTitle, position, score, testId, title, type) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17});".format(*param)
+        query = "INSERT INTO icourse163.question (id, allowUpload, description, gmtCreate, gmtModified, ojMemLimit, ojNeedInput, ojSupportedLanguage, ojTimeLimit, ojTryTime, options, optionsDetail, plainTextTitle, position, score, testId, title, type) VALUES ({0}, {1}, '{2}', {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, '{12}', {13}, {14}, {15}, '{16}', {17});".format(*param)
 
         result = db.execute_query(query)
         db.commit()
