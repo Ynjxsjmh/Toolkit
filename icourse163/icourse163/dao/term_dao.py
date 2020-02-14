@@ -9,7 +9,7 @@ class TermDao(object):
         db = DBConnection()
 
         param = []
-        param.append(term.term_id)
+        param.append(term.id)
         param.append(term.achievement_status)
         param.append(term.course_id)
         param.append(term.end_time)
@@ -18,7 +18,7 @@ class TermDao(object):
         param.append(term.lessons_count)
         param.append(term.school_id)
 
-        query = "INSERT INTO term (termId, achievementStatus, courseId, endTime, startTime, enrollCount, lessonsCount, schoolId) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7});".format(*param)
+        query = "INSERT INTO term (id, achievementStatus, courseId, endTime, startTime, enrollCount, lessonsCount, schoolId) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7});".format(*param)
 
         result = db.execute_query(query)
         db.commit()
@@ -27,7 +27,7 @@ class TermDao(object):
 
     def search_by_id(self, term_id):
         db = DBConnection()
-        query = "SELECT * from term where termId = {}".format(term_id)
+        query = "SELECT * from term where id = {}".format(term_id)
         result = db.execute_query(query)
         return result
 
