@@ -1,4 +1,4 @@
-from icourse163.util import camel_to_snake
+from icourse163.utils.util import camel_to_snake
 
 
 class Question(object):
