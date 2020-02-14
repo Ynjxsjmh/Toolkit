@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 
 from icourse163.utils.login import get_login_session
 from icourse163.utils.util import most_common
+from icourse163.utils.util import raw_unicode_escape
 
 from icourse163.domain.term import Term
 from icourse163.domain.test import Test
@@ -21,7 +22,7 @@ from icourse163.dao.answer_dao import AnswerDao
 from icourse163.dao.course_dao import CourseDao
 from icourse163.dao.member_dao import MemberDao
 from icourse163.dao.question_dao import QuestionDao
-from icourse.dao.summary_dao import SummaryDao
+from icourse163.dao.summary_dao import SummaryDao
 
 
 session = get_login_session()
@@ -74,6 +75,8 @@ def save_terms():
             result["schoolId"]
             result["videoId"]
             result["currentTermId"]
+            print(result)
+            result["name"] = raw_unicode_escape(result["name"])
             course = Course(result)
             courseDao.save(course)
         except KeyError:
@@ -105,12 +108,14 @@ def save_term_statistic(term_id):
 
     for line in response.splitlines():
         result = dict(re.findall(catch_pair_regex, line))
+        print(result)
 
         try:
-            result["chapter_id"]
-            result["exam_id"]
+            result["chapterId"]
+            result["examId"]
             result["id"]
-            result["term_id"]
+            result["termId"]
+#            print(result)
             test = Test(result)
             testDao.save(test)
         except KeyError:
@@ -118,7 +123,7 @@ def save_term_statistic(term_id):
 
         try:
             result["id"]
-            result["test_id"]
+            result["testId"]
             result["optionsDetail"]
             question = Question(result)
             questionDao.save(question)
