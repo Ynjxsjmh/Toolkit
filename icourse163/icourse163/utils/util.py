@@ -14,6 +14,7 @@ def raw_unicode_escape(string: str) -> str:
     2. 将两个字符串一起的转成一个字符串
     """
     result = ""
+    string = string.replace("'", "\"")
     try:
         result = json.loads('{}'.format(string))
     except AttributeError:
