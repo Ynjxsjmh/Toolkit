@@ -41,7 +41,7 @@ class MemberDao(object):
         param.append(member.student_number)
         param.append(member.user_name)
 
-        query = "INSERT INTO icourse163.member (id, accountType, birthDay, description, email, emailActive, enable, epayAccount, epayAccountState, gmtCreate, gmtModified, idNumber, idType, largeFaceUrl, lastLogonTime, lastLongIP, loginId, loginType, memberFrom, moocLastLogonTime, nickName, personalUrlSuffix, phoneNumber, qqNumber, realName, sex, signature, skills, smallFaceUrl, studentNumber, userName) VALUES ({1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20}, {21}, {22}, {23}, {24}, {25}, {26}, {27}, {28}, {29}, {30}, {31});".format(*param)
+        query = "INSERT INTO icourse163.member (id, accountType, birthDay, description, email, emailActive, enable, epayAccount, epayAccountState, gmtCreate, gmtModified, idNumber, idType, largeFaceUrl, lastLogonTime, lastLongIP, loginId, loginType, memberFrom, moocLastLogonTime, nickName, personalUrlSuffix, phoneNumber, qqNumber, realName, sex, signature, skills, smallFaceUrl, studentNumber, userName) VALUES ('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}', '{26}', '{27}', '{28}', '{29}', '{30}', '{31}');".format(*param)
 
         result = db.execute_query(query)
         db.commit()
