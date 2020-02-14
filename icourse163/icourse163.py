@@ -10,12 +10,14 @@ from icourse163.domain.term import Term
 from icourse163.domain.test import Test
 from icourse163.domain.answer import Answer
 from icourse163.domain.course import Course
+from icourse163.domain.question import Question
 from icourse163.domain.term_score_summary import TermScoreSummary
 
 from icourse163.dao.term_dao import TermDao
 from icourse163.dao.test_dao import TestDao
 from icourse163.dao.answer_dao import AnswerDao
 from icourse163.dao.course_dao import CourseDao
+from icourse163.dao.question_dao import QuestionDao
 from icourse.dao.summary_dao import SummaryDao
 
 
@@ -94,7 +96,9 @@ def save_term_statistic(term_id):
     catch_pair_regex = re.compile(r's\d+\.([^=]+)=((?:"\[[^\]]+\]"|"<p.*</p>"|[^;]+));')
 
     test = None
+    question = None
     testDao = TestDao()
+    questionDao = QuestionDao()
 
     for line in response.splitlines():
         result = dict(re.findall(catch_pair_regex, line))
@@ -106,6 +110,15 @@ def save_term_statistic(term_id):
             result["term_id"]
             test = Test(result)
             testDao.save(test)
+        except KeyError:
+            pass
+
+        try:
+            result["id"]
+            result["test_id"]
+            result["optionsDetail"]
+            question = Question(result)
+            questionDao.save(question)
         except KeyError:
             pass
 
