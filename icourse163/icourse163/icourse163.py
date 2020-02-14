@@ -151,17 +151,21 @@ def save_all_students_score(term_id):
 
     response = session.post(url=request_student_score_url, data=form_data).text
     response = json.loads(response)
-    form_data["pSize"] = response["result"]["query"]["totleCount"]
-    response = session.post(url=request_student_score_url, data=form_data).text
-    response = json.loads(response)
 
-    summary = None
-    summaryDao = SummaryDao()
+    if response["result"]["query"] is not None:
+        form_data["pSize"] = response["result"]["query"]["totleCount"]
+        response = session.post(url=request_student_score_url, data=form_data).text
+        response = json.loads(response)
 
-    for summary in response["result"]["list"]:
-        term_score_summary = TermScoreSummary(summary)
+        summary = None
+        summaryDao = SummaryDao()
 
-        summaryDao.save(term_score_summary)
+        for summary in response["result"]["list"]:
+            term_score_summary = TermScoreSummary(summary)
+
+            summaryDao.save(term_score_summary)
+    else:
+        print("Term {} doesn't have summary now".format(term_id))
 
 
 def save_student_score_detail(member_id, term_id):
