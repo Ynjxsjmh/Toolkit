@@ -5,11 +5,13 @@ import random
 from bs4 import BeautifulSoup
 
 from icourse163.utils.login import get_login_session
+from icourse163.utils.util import most_common
 
 from icourse163.domain.term import Term
 from icourse163.domain.test import Test
 from icourse163.domain.answer import Answer
 from icourse163.domain.course import Course
+from icourse163.domain.member import Member
 from icourse163.domain.question import Question
 from icourse163.domain.term_score_summary import TermScoreSummary
 
@@ -17,6 +19,7 @@ from icourse163.dao.term_dao import TermDao
 from icourse163.dao.test_dao import TestDao
 from icourse163.dao.answer_dao import AnswerDao
 from icourse163.dao.course_dao import CourseDao
+from icourse163.dao.member_dao import MemberDao
 from icourse163.dao.question_dao import QuestionDao
 from icourse.dao.summary_dao import SummaryDao
 
@@ -185,6 +188,76 @@ def save_student_score_detail(member_id, term_id):
             result["tid"]
             answer = Answer(result)
             answerDao.save(answer)
+        except KeyError:
+            pass
+
+
+def save_student(term_id):
+    # http://www.icourse163.org/collegeAdmin/termManage/1206772205.htm#/tp/cdata?t=1&tid=1220061747
+    request_student_in_term_url = "http://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getStudentTestAggreScores.dwr"
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'MocScoreManagerBean',
+        'c0-methodName': 'getStudentTestAggreScores',
+        'c0-id': 0,
+        'c0-param0': term_id,
+        'c0-param1': 20,
+        'c0-param2': 1,
+        'c0-param3': "",
+        'c0-param4': 1,
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    response = session.post(url=request_student_in_term_url, data=payload).text
+
+    info_regex = re.compile(r".*limit=(?P<limit>\d+).*offset=(?P<offset>\d+).*totleCount=(?P<totleCount>\d+)")
+    info_match = re.search(info_regex, response)
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'MocScoreManagerBean',
+        'c0-methodName': 'getStudentTestAggreScores',
+        'c0-id': 0,
+        'c0-param0': term_id,
+        'c0-param1': info_match.group("totleCount"),
+        'c0-param2': 1,
+        'c0-param3': "",
+        'c0-param4': 1,
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    response = session.post(url=request_student_in_term_url, data=payload).text
+
+    obj_regex = re.compile(r'(s\d+\.)')
+    member = None
+    memberDao = MemberDao()
+
+    for line in response.splitlines():
+        result = re.findall(obj_regex, line)
+        obj = most_common(result)
+        results = line.split(obj)
+        result_list = []
+
+        for result in results:
+            if result == "":
+                pass
+            else:
+                result_list.append(result[:-1].split("=", 1))
+
+        result = dict(result_list)
+
+        try:
+            result["id"]
+            result["email"]
+            result["nickname"]
+            result["realname"]
+            member = Member(result)
+            memberDao.save(member)
         except KeyError:
             pass
 
