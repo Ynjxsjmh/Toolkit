@@ -1,0 +1,151 @@
+digraph G {
+    rankdir="LR"
+
+    node [shape=plaintext]
+
+    course [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR>
+            <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Course</TD>
+            </TR>
+            <TR>
+            <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">course_id</TD>
+            </TR>
+            <TR>
+            <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">term_id</TD>
+            </TR>
+            <TR>
+            <TD PORT="cell4" bgcolor="white" ROWSPAN="1" COLSPAN="1">course_name</TD>
+            </TR>
+            </TABLE>>]
+
+    term [label=<
+          <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+          <TR>
+          <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Term</TD>
+          </TR>
+          <TR>
+          <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">term_id</TD>
+          </TR>
+          <TR>
+          <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">course_id</TD>
+          </TR>
+          </TABLE>>]
+
+    chapter [label=<
+             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+             <TR>
+             <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Chapter</TD>
+             </TR>
+             <TR>
+             <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">chapter_id</TD>
+             </TR>
+             <TR>
+             <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">term_id</TD>
+             </TR>
+             </TABLE>>]
+
+    exam [label=<
+          <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+          <TR>
+          <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Exam</TD>
+          </TR>
+          <TR>
+          <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">exam_id</TD>
+          </TR>
+          <TR>
+          <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">term_id</TD>
+          </TR>
+          </TABLE>>]
+
+    test [label=<
+          <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+          <TR>
+          <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Test</TD>
+          </TR>
+          <TR>
+          <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">test_id</TD>
+          </TR>
+          <TR>
+          <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">chapter_id</TD>
+          </TR>
+          <TR>
+          <TD PORT="cell4" bgcolor="white" ROWSPAN="1" COLSPAN="1">exma_id</TD>
+          </TR>
+          </TABLE>>]
+
+    question [label=<
+              <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+              <TR>
+              <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Question</TD>
+              </TR>
+              <TR>
+              <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">question_id</TD>
+              </TR>
+              <TR>
+              <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">test_id</TD>
+              </TR>
+              </TABLE>>]
+
+    answer [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR>
+            <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Answer</TD>
+            </TR>
+            <TR>
+            <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">answer_id</TD>
+            </TR>
+            <TR>
+            <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">answerer_id</TD>
+            </TR>
+            <TR>
+            <TD PORT="cell4" bgcolor="white" ROWSPAN="1" COLSPAN="1">test_id</TD>
+            </TR>
+            </TABLE>>]
+
+    member [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR>
+            <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Member</TD>
+            </TR>
+            <TR>
+            <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">member_id</TD>
+            </TR>
+            </TABLE>>]
+
+    summary [label=<
+             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+             <TR>
+             <TD PORT="cell1" bgcolor="white" ROWSPAN="1" COLSPAN="1">Summary</TD>
+             </TR>
+             <TR>
+             <TD PORT="cell2" bgcolor="white" ROWSPAN="1" COLSPAN="1">summary_id</TD>
+             </TR>
+             <TR>
+             <TD PORT="cell3" bgcolor="white" ROWSPAN="1" COLSPAN="1">term_id</TD>
+             </TR>
+             <TR>
+             <TD PORT="cell4" bgcolor="white" ROWSPAN="1" COLSPAN="1">member_id</TD>
+             </TR>
+             </TABLE>>]
+
+    course:cell2 -> term:cell3:w [xlabel="", arrowhead=normal, arrowtail=normal, color=black, fontcolor=black, fontname="Times-Roman", fontsize=14.0, xlabelfontcolor=black, xlabelfontname="Times-Roman", xlabelfontsize=14.0, headxlabel="", tailxlabel=""]
+
+    term:cell2 -> chapter:cell3:w [xlabel=""]
+
+    term:cell3 -> exam:cell3 [xlabel=""]
+
+    chapter:cell2 -> test:cell3 [xlabel=""]
+
+    exam:cell2 -> test:cell4 [xlabel=""]
+
+    test:cell2 -> question:cell3 [xlabel=""]
+
+    test:cell2 -> answer:cell4 [xlabel=""]
+
+    answer:cell2 -> member:cell2 [xlabel=""]
+
+    term:cell2 -> summary:cell3
+
+    summary:cell4 -> member:cell2
+}
