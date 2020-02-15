@@ -1,0 +1,2 @@
+localhost,
+host,username,passwd,databasename
