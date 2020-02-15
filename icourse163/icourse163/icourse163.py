@@ -187,7 +187,9 @@ def save_student_score_detail(member_id, term_id):
 
     catch_pair_regex = re.compile(r's\d+\.([^=]+)=([^;]+);')
     answer = None
+    member = None
     answerDao = AnswerDao()
+    memberDao = MemberDao()
 
     for line in response.splitlines():
         result = dict(re.findall(catch_pair_regex, line))
@@ -196,12 +198,26 @@ def save_student_score_detail(member_id, term_id):
             if result["id"] == 'null':
                 continue
             result["aid"]
-            result["answerer_id"]
-            result["exam_id"]
-            result["test_id"]
+            result["answererId"]
+            result["examId"]
+            result["testId"]
             result["tid"]
+            result["name"] = raw_unicode_escape(result["name"])
+            result["nickname"] = raw_unicode_escape(result["nickname"])
             answer = Answer(result)
             answerDao.save(answer)
+        except KeyError:
+            pass
+
+        try:
+            result["id"]
+            result["email"]
+            result["nickName"] = raw_unicode_escape(result["nickName"])
+            result["realName"] = raw_unicode_escape(result["realName"])
+            result["userName"] = raw_unicode_escape(result["userName"])
+            result["description"] = raw_unicode_escape(result["description"])
+            member = Member(result)
+            memberDao.save(member)
         except KeyError:
             pass
 
