@@ -286,30 +286,6 @@ def save_student_in_term(test_id):
         print("Couldn't get student in term {}, maybe you don't have right".format(test_id))
 
 
-def ttt():
-    request_student_in_term_url = "http://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getStudentTestAggreScores.dwr"
-
-    payload = {
-        'callCount': 1,
-        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
-        'httpSessionId': http_session_id,
-        'c0-scriptName': 'MocScoreManagerBean',
-        'c0-methodName': 'getStudentTestAggreScores',
-        'c0-id': 0,
-        'c0-param0': 1220061747,
-        'c0-param1': 1098,
-        'c0-param2': 1,
-        'c0-param3': "",
-        'c0-param4': 1,
-        'batchId': random.randint(1000000000000, 20000000000000)
-    }
-
-    response = session.post(url=request_student_in_term_url, data=payload).text
-
-    with open("TestAggreScores.txt", "w") as f:
-        f.write(response)
-
-
 if __name__ == "__main__":
     session = get_login_session()
     http_session_id = session.cookies["NTESSTUDYSI"]
