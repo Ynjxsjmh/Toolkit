@@ -206,7 +206,7 @@ def save_student_score_detail(member_id, term_id):
             pass
 
 
-def save_student(term_id):
+def save_student_in_term(test_id):
     # http://www.icourse163.org/collegeAdmin/termManage/1206772205.htm#/tp/cdata?t=1&tid=1220061747
     request_student_in_term_url = "http://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getStudentTestAggreScores.dwr"
 
@@ -217,7 +217,7 @@ def save_student(term_id):
         'c0-scriptName': 'MocScoreManagerBean',
         'c0-methodName': 'getStudentTestAggreScores',
         'c0-id': 0,
-        'c0-param0': term_id,
+        'c0-param0': test_id,
         'c0-param1': 20,
         'c0-param2': 1,
         'c0-param3': "",
@@ -227,8 +227,51 @@ def save_student(term_id):
 
     response = session.post(url=request_student_in_term_url, data=payload).text
 
-    info_regex = re.compile(r".*limit=(?P<limit>\d+).*offset=(?P<offset>\d+).*totleCount=(?P<totleCount>\d+)")
-    info_match = re.search(info_regex, response)
+    totle_count_regex = re.compile(r".*totleCount=(?P<totleCount>\d+)")
+
+    info_match = None
+    info_match = re.search(totle_count_regex, response)
+
+    if info_match is not None:
+        print(info_match.group("totleCount"))
+        payload = {
+            'callCount': 1,
+            'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+            'httpSessionId': http_session_id,
+            'c0-scriptName': 'MocScoreManagerBean',
+            'c0-methodName': 'getStudentTestAggreScores',
+            'c0-id': 0,
+            'c0-param0': test_id,
+            'c0-param1': info_match.group("totleCount"),
+            'c0-param2': 1,
+            'c0-param3': "",
+            'c0-param4': 1,
+            'batchId': random.randint(1000000000000, 20000000000000)
+        }
+
+        response = session.post(url=request_student_in_term_url, data=payload).text
+
+        member = None
+        memberDao = MemberDao()
+
+        for line in response.splitlines():
+            result = get_key_value(line)
+
+            try:
+                result["id"]
+                result["email"]
+                result["nickname"]
+                result["realname"]
+                member = Member(result)
+                memberDao.save(member)
+            except KeyError:
+                pass
+    else:
+        print("Couldn't get student in term {}, maybe you don't have right".format(test_id))
+
+
+def ttt():
+    request_student_in_term_url = "http://www.icourse163.org/dwr/call/plaincall/MocScoreManagerBean.getStudentTestAggreScores.dwr"
 
     payload = {
         'callCount': 1,
@@ -237,8 +280,8 @@ def save_student(term_id):
         'c0-scriptName': 'MocScoreManagerBean',
         'c0-methodName': 'getStudentTestAggreScores',
         'c0-id': 0,
-        'c0-param0': term_id,
-        'c0-param1': info_match.group("totleCount"),
+        'c0-param0': 1220061747,
+        'c0-param1': 1098,
         'c0-param2': 1,
         'c0-param3': "",
         'c0-param4': 1,
@@ -247,33 +290,8 @@ def save_student(term_id):
 
     response = session.post(url=request_student_in_term_url, data=payload).text
 
-    obj_regex = re.compile(r'(s\d+\.)')
-    member = None
-    memberDao = MemberDao()
-
-    for line in response.splitlines():
-        result = re.findall(obj_regex, line)
-        obj = most_common(result)
-        results = line.split(obj)
-        result_list = []
-
-        for result in results:
-            if result == "":
-                pass
-            else:
-                result_list.append(result[:-1].split("=", 1))
-
-        result = dict(result_list)
-
-        try:
-            result["id"]
-            result["email"]
-            result["nickname"]
-            result["realname"]
-            member = Member(result)
-            memberDao.save(member)
-        except KeyError:
-            pass
+    with open("TestAggreScores.txt", "w") as f:
+        f.write(response)
 
 
 if __name__ == "__main__":
@@ -339,3 +357,4 @@ if __name__ == "__main__":
      }
     cs_url = 'http://www.icourse163.org/dwr/call/plaincall/CourseBean.getLastLearnedMocTermDto.dwr'
 #    rdata = session.post(cs_url, data=payload, timeout=None).text
+
