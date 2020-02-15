@@ -42,3 +42,11 @@ class SummaryDao(object):
         db.commit()
 
         return result
+
+    def search_all(self):
+        db = DBConnection()
+
+        query = "select * from summary;"
+        result = db.execute_query(query)
+
+        return result
