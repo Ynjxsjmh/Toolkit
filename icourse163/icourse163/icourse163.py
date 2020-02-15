@@ -1,11 +1,8 @@
 import re
 import json
-import requests
 import random
-from bs4 import BeautifulSoup
 
 from icourse163.utils.login import get_login_session
-from icourse163.utils.util import most_common
 from icourse163.utils.util import raw_unicode_escape
 from icourse163.utils.util import get_key_value
 
