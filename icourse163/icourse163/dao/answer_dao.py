@@ -29,7 +29,7 @@ class AnswerDao(object):
         param.append(answer.total_score)
         param.append(answer.type)
 
-        query = "INSERT INTO answer (id, aid, answererId, deadline, effectStatus, examId, finalScore, name, nickname, objectiveScore, score, scorePubStatus, showScore, subjectiveScore, submitTime, testId, tid, totalScore, type) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18});".format(*param)
+        query = "INSERT INTO answer (id, aid, answererId, deadline, effectStatus, examId, finalScore, name, nickname, objectiveScore, score, scorePubStatus, showScore, subjectiveScore, submitTime, testId, tid, totalScore, type) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}');".format(*param)
 
         result = db.execute_query(query)
         db.commit()
