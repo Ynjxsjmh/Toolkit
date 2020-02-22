@@ -1,6 +1,5 @@
 @echo off
 IF "%~1" NEQ "" (
-   Set "process=%~1.exe"
-   echo "killing process %process%"
-   taskkill /F /IM %process% /T
+   echo "killing process %~1.exe"
+   "%__APPDIR__%taskkill.exe" /F /IM "%~1.exe" /T
 )
