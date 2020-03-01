@@ -1,2 +1,0 @@
-localhost,root,songfuhu,icourse163
-host,username,passwd,databasename
