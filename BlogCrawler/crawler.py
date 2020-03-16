@@ -11,10 +11,12 @@ import json
 import time
 import datetime
 import requests
-
+from bs4 import BeautifulSoup
 
 page_num = 16
 dst_dir = "CSDN"
+img_dir = "images"
+img_link_tml = "https://raw.githubusercontent.com/Ynjxsjmh/ynjxsjmh.github.io/master/img/{0}/{1}/{2}.{3}"
 headers = {
     "cookie": "",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
@@ -43,6 +45,84 @@ def request_md(blog_id, date, status):
     response = json.loads(response.text)
 
     write_as_md(response, date, status)
+
+
+def download_img(img_url, img_loc, img_name):
+    """
+    1. 如果图片没有下载过，下载
+    2. 如果图片下载过，什么都不做
+    """
+    img_suffix = ".error"
+    # 再判断gif是否存在太麻烦，大多数是 png，能省一次就一次
+    img_path = os.path.join(img_loc, img_name + ".png")
+
+    if not os.path.isfile(img_path):
+        response = requests.get(img_url)
+        img_mime = response.headers["content-type"]
+        img_data = response.content
+
+        if img_mime.endswith("png"):
+            img_suffix = ".png"
+        elif img_mime.endswith("jpeg"):
+            img_suffix = ".jpg"
+        elif img_mime.endswith("gif"):
+            img_suffix = ".gif"
+        else:
+            pass
+
+        if not ("." in img_name):
+            img_name = img_name + img_suffix
+
+        img_path = os.path.join(img_loc, img_name)
+
+        os.makedirs(os.path.dirname(img_path), exist_ok=True)
+        with open(img_path, "wb") as handler:
+            handler.write(img_data)
+            time.sleep(3)
+    else:
+        pass
+
+    return img_suffix
+
+
+def parse_img(content):
+    img_links = []
+
+    md_img_regex = "!\[[^\]]*\]\(([^\)]*)\)"
+    md_img_links = re.findall(md_img_regex, content)
+
+    img_links.extend(md_img_links)
+
+    soup = BeautifulSoup(content, "html.parser")
+    html_imgs = soup.findAll("img")
+
+    for html_img in html_imgs:
+        html_img_link = html_img["src"]
+        img_links.append(html_img_link)
+
+    for img_link in img_links:
+        # 有两种 link
+        # img-blog.csdn.net 的无后缀
+        # img-blog.csdnimg.cn 有后缀
+        # 最后一种是已经托管在 github 上的
+
+        if "github" in img_link:
+            continue
+
+        no_wm = img_link.split("?")[0]
+        img_name = no_wm.split("/")[-1]
+
+        print(f"  Parsing {img_link} ...")
+        dt = datetime.datetime.strptime(img_name.split(".")[0], '%Y%m%d%H%M%S%f')
+        after_name = "{0}{1}{2}_{3}{4}{5}_{6}".format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond)
+        img_loc = os.path.join(*[dst_dir, img_dir, str(dt.year), str(dt.month)])
+
+        img_suffix = download_img(img_link, img_loc, after_name)
+
+        after_img_link = img_link_tml.format(dt.year, dt.month, after_name, img_suffix)
+        content = content.replace(img_link, after_img_link)
+
+    return content
 
 
 def write_as_md(data, date, status):
@@ -90,15 +170,19 @@ key:        {5}
         content = markdowncontent
         file_type = "md"
 
+    content = parse_img(content)
+
     file_name = f"{dst_dir}/{name}.{file_type}"
 
     try:
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(meta + content)
 
         print(f"写入 {name}")
     except OSError:
         file_error_name = f"{dst_dir}/{date[0]}-{date[1]}-{date[2]}-filename-error.{file_type}"
+        os.makedirs(os.path.dirname(file_error_name), exist_ok=True)
         with open(file_error_name, "w", encoding="utf-8") as f:
             f.write(meta + content)
 
@@ -130,6 +214,4 @@ def crawl(total_pages):
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(dst_dir):
-        os.mkdir(dst_dir)
     crawl(page_num)
