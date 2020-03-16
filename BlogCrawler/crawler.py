@@ -3,7 +3,7 @@
 # @Date    : <2020-03-16 Mon 04:18>
 # @Author  : Ynjxsjmh
 # @Link    : https://github.com/ynjxsjmh
-# @Version : v1.0
+# @Version : v2.0
 
 import os
 import re
@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 page_num = 16
 dst_dir = "CSDN"
 img_dir = "images"
-img_link_tml = "https://raw.githubusercontent.com/Ynjxsjmh/ynjxsjmh.github.io/master/img/{0}/{1}/{2}.{3}"
+img_link_tml = "https://raw.githubusercontent.com/Ynjxsjmh/ynjxsjmh.github.io/master/img/{0:04d}/{1:02d}/{2}{3}"
 headers = {
     "cookie": "",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
@@ -53,34 +53,35 @@ def download_img(img_url, img_loc, img_name):
     2. 如果图片下载过，什么都不做
     """
     img_suffix = ".error"
-    # 再判断gif是否存在太麻烦，大多数是 png，能省一次就一次
-    img_path = os.path.join(img_loc, img_name + ".png")
 
-    if not os.path.isfile(img_path):
-        response = requests.get(img_url)
-        img_mime = response.headers["content-type"]
-        img_data = response.content
+    img_suffixs = [".png", ".jpg", ".gif"]
+    for suffix in img_suffixs:
+        img_path = os.path.join(img_loc, img_name + suffix)
 
-        if img_mime.endswith("png"):
-            img_suffix = ".png"
-        elif img_mime.endswith("jpeg"):
-            img_suffix = ".jpg"
-        elif img_mime.endswith("gif"):
-            img_suffix = ".gif"
-        else:
-            pass
+        if os.path.isfile(img_path):
+            return suffix
 
-        if not ("." in img_name):
-            img_name = img_name + img_suffix
+    response = requests.get(img_url)
+    img_mime = response.headers["content-type"]
+    img_data = response.content
 
-        img_path = os.path.join(img_loc, img_name)
-
-        os.makedirs(os.path.dirname(img_path), exist_ok=True)
-        with open(img_path, "wb") as handler:
-            handler.write(img_data)
-            time.sleep(3)
+    if img_mime.endswith("png"):
+        img_suffix = img_suffixs[0]
+    elif img_mime.endswith("jpeg"):
+        img_suffix = img_suffixs[1]
+    elif img_mime.endswith("gif"):
+        img_suffix = img_suffixs[2]
     else:
         pass
+
+    if not ("." in img_name):
+        img_name = img_name + img_suffix
+
+    img_path = os.path.join(img_loc, img_name)
+    os.makedirs(os.path.dirname(img_path), exist_ok=True)
+    with open(img_path, "wb") as handler:
+        handler.write(img_data)
+        time.sleep(3)
 
     return img_suffix
 
@@ -109,13 +110,16 @@ def parse_img(content):
         if "github" in img_link:
             continue
 
+        if not ("http" in img_link):
+            img_link = "http://" + img_link
+
         no_wm = img_link.split("?")[0]
         img_name = no_wm.split("/")[-1]
+        dt = datetime.datetime.strptime(img_name.split(".")[0], '%Y%m%d%H%M%S%f')
 
         print(f"  Parsing {img_link} ...")
-        dt = datetime.datetime.strptime(img_name.split(".")[0], '%Y%m%d%H%M%S%f')
-        after_name = "{0}{1}{2}_{3}{4}{5}_{6}".format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond)
-        img_loc = os.path.join(*[dst_dir, img_dir, str(dt.year), str(dt.month)])
+        after_name = "{0:04d}{1:02d}{2:02d}_{3:02d}{4:02d}{5:02d}_{6}".format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond)
+        img_loc = os.path.join(*[dst_dir, img_dir, str(dt.year), dt.strftime('%m')])
 
         img_suffix = download_img(img_link, img_loc, after_name)
 
@@ -137,8 +141,7 @@ def write_as_md(data, date, status):
     # 页面唯一标识符，用于统计系统和评论系统
     key = "key" + str(int(datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timestamp()))
 
-    meta = """
----
+    meta = """---
 layout:     post
 title:      {0}
 subtitle:
@@ -149,8 +152,7 @@ link:       {2}
 category:   [{3}]
 tags:       [{4}]
 key:        {5}
----\n
-    """.format(title, date, orginal_link, categories, tags, key)
+---\n\n\n""".format(data["data"]["title"], date, orginal_link, categories, tags, key)
 
     if status == "2":
         atype = "（草稿）"
@@ -199,7 +201,7 @@ def crawl(total_pages, start=1):
     for page in range(start, total_pages + 1):
         articles.extend(request_article_list(page))
 
-    print(f"You have {len(articles)} posts");
+    print(f"You have {len(articles)} posts")
 
     for article in articles:
         article_id = article["ArticleId"]
