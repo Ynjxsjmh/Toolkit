@@ -189,14 +189,14 @@ key:        {5}
         print(f"写入 {file_error_name}")
 
 
-def crawl(total_pages):
+def crawl(total_pages, start=1):
     """
     获取博客列表，包括id，时间
     获取博客内容数据
     """
     articles = []
 
-    for page in range(1, total_pages + 1):
+    for page in range(start, total_pages + 1):
         articles.extend(request_article_list(page))
 
     print(f"You have {len(articles)} posts");
