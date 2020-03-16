@@ -3,7 +3,7 @@
 # @Date    : <2020-03-16 Mon 04:18>
 # @Author  : Ynjxsjmh
 # @Link    : https://github.com/ynjxsjmh
-# @Version : v2.0
+# @Version : v2.1
 
 import os
 import re
@@ -102,28 +102,42 @@ def parse_img(content):
         img_links.append(html_img_link)
 
     for img_link in img_links:
-        # 有两种 link
-        # img-blog.csdn.net 的无后缀
-        # img-blog.csdnimg.cn 有后缀
-        # 最后一种是已经托管在 github 上的
+        # 有这么几种link
+        # 1. img-blog.csdn.net 的无后缀
+        # 2. img-blog.csdnimg.cn 有后缀
+        # 3. imgconvert.csdnimg.cn 转换后的，图片名没意义（而且这个api不应该返回它）
+        # 4. 已经托管在 github 上的
+        # 5. 别人的图
 
         if "github" in img_link:
             continue
 
+        if not ("csdn" in img_link):
+            continue
+
         if not ("http" in img_link):
-            img_link = "http://" + img_link
+            img_link = "http:" + img_link
 
         no_wm = img_link.split("?")[0]
-        img_name = no_wm.split("/")[-1]
-        dt = datetime.datetime.strptime(img_name.split(".")[0], '%Y%m%d%H%M%S%f')
-
         print(f"  Parsing {img_link} ...")
-        after_name = "{0:04d}{1:02d}{2:02d}_{3:02d}{4:02d}{5:02d}_{6}".format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond)
-        img_loc = os.path.join(*[dst_dir, img_dir, str(dt.year), dt.strftime('%m')])
+        img_name = no_wm.split("/")[-1]
+
+        if "convert" in img_link:
+            after_name = img_name
+            img_loc = os.path.join(*[dst_dir, img_dir])
+        else:
+            dt = datetime.datetime.strptime(img_name.split(".")[0], '%Y%m%d%H%M%S%f')
+            after_name = "{0:04d}{1:02d}{2:02d}_{3:02d}{4:02d}{5:02d}_{6}".format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond)
+            img_loc = os.path.join(*[dst_dir, img_dir, str(dt.year), dt.strftime('%m')])
 
         img_suffix = download_img(img_link, img_loc, after_name)
 
-        after_img_link = img_link_tml.format(dt.year, dt.month, after_name, img_suffix)
+        if "convert" in img_link:
+            # Only download it
+            continue
+        else:
+            after_img_link = img_link_tml.format(dt.year, dt.month, after_name, img_suffix)
+
         content = content.replace(img_link, after_img_link)
 
     return content
