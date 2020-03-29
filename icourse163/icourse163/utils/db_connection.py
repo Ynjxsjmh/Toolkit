@@ -37,9 +37,11 @@ class DBConnection(object):
                 pass
             else:
                 traceback.print_exc()
+                sys.exit()
         except Exception:
             print(sys.exc_info()[0])
             traceback.print_exc()
+            sys.exit()
 
         return result
 
