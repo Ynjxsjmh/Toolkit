@@ -13,6 +13,9 @@ from icourse163.domain.course import Course
 from icourse163.domain.member import Member
 from icourse163.domain.question import Question
 from icourse163.domain.term_score_summary import TermScoreSummary
+from icourse163.domain.case_result import CaseResult
+from icourse163.domain.answer_detail import AnswerDetail
+from icourse163.domain.question_submit_record import QuestionSubmitRecord
 
 from icourse163.dao.term_dao import TermDao
 from icourse163.dao.test_dao import TestDao
@@ -21,6 +24,9 @@ from icourse163.dao.course_dao import CourseDao
 from icourse163.dao.member_dao import MemberDao
 from icourse163.dao.question_dao import QuestionDao
 from icourse163.dao.summary_dao import SummaryDao
+from icourse163.dao.case_result_dao import CaseResultDao
+from icourse163.dao.answer_detail_dao import AnswerDetailDao
+from icourse163.dao.question_submit_record_dao import QuestionSubmitRecordDao
 
 
 session = get_login_session()
@@ -215,6 +221,117 @@ def save_student_score_detail(member_id, term_id):
             result["description"] = raw_unicode_escape(result["description"])
             member = Member(result)
             memberDao.save(member)
+        except KeyError:
+            pass
+
+
+def save_case_result(test_id, answer_id):
+    request_term_status_url = "https://www.icourse163.org/dwr/call/plaincall/YocOJQuizBean.getOJPaperDto.dwr"
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'YocOJQuizBean',
+        'c0-methodName': 'getOJPaperDto',
+        'c0-id': 0,
+        'c0-param0': test_id,
+        'c0-param1': answer_id,
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    response = session.post(url=request_term_status_url, data=payload).text
+
+    caseResult = None
+    caseResultDao = CaseResultDao()
+
+    for line in response.splitlines():
+        result = get_key_value(line)
+
+        try:
+            result["caseId"]
+            result["usedMemory"]
+            result["passs"] = result["pass"]
+            result["testId"] = test_id
+            result["answerId"] = answer_id
+            print(result)
+            caseResult = CaseResult(result)
+            caseResultDao.save(caseResult)
+        except KeyError:
+            pass
+
+
+def save_submit_record(test_id, answer_id):
+    request_term_status_url = "https://www.icourse163.org/dwr/call/plaincall/YocOJQuizBean.adminGetOjQuestionSubmitRecords.dwr"
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'YocOJQuizBean',
+        'c0-methodName': 'adminGetOjQuestionSubmitRecords',
+        'c0-id': 0,
+        'c0-param0': test_id,
+        'c0-param1': 'false',
+        'c0-param2': answer_id,
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    response = session.post(url=request_term_status_url, data=payload).text
+
+    questionSubmitRecord = None
+    questionSubmitRecordDao = QuestionSubmitRecordDao()
+
+    for line in response.splitlines():
+        result = get_key_value(line)
+
+        try:
+            result["questionId"]
+            result["testAnswerformId"]
+            result["testId"]
+            result["userId"]
+            print(result)
+            questionSubmitRecord = QuestionSubmitRecord(result)
+            questionSubmitRecordDao.save(questionSubmitRecord)
+        except KeyError:
+            pass
+
+
+def save_answer_detail(test_id, answer_id):
+    request_term_status_url = "https://www.icourse163.org/dwr/call/plaincall/MocQuizBean.getQuizPaperDto.dwr"
+
+    payload = {
+        'callCount': 1,
+        'scriptSessionId': '${scriptSessionId}' + str(random.randint(0, 200)),
+        'httpSessionId': http_session_id,
+        'c0-scriptName': 'MocQuizBean',
+        'c0-methodName': 'getQuizPaperDto',
+        'c0-id': 0,
+        'c0-param0': test_id,
+        'c0-param1': answer_id,
+        'c0-param2': 'true',
+        'batchId': random.randint(1000000000000, 20000000000000)
+    }
+
+    response = session.post(url=request_term_status_url, data=payload).text
+
+    answerDetail = None
+    answerDetailDao = AnswerDetailDao()
+
+    for line in response.splitlines():
+        result = get_key_value(line)
+
+        try:
+            result["qid"]
+            result["score"]
+            result["lastAnswerId"]
+            result["score"]
+            result["type"]
+            result["testId"] = test_id
+            result["answerId"] = answer_id
+            print(result)
+            answerDetail = AnswerDetail(result)
+            answerDetailDao.save(answerDetail)
         except KeyError:
             pass
 
