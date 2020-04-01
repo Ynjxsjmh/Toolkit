@@ -50,3 +50,11 @@ class SummaryDao(object):
         result = db.execute_query(query)
 
         return result
+
+    def search_by_term_id(self, term_id):
+        db = DBConnection()
+
+        query = "SELECT * from summary where termId = {}".format(term_id)
+        result = db.execute_query(query)
+
+        return result

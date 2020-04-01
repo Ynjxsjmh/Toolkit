@@ -35,3 +35,14 @@ class AnswerDao(object):
         db.commit()
 
         return result
+
+    def search_by_answerer_id(self, answerer_id):
+        db = DBConnection()
+        query = "SELECT * from answer where answererId = '{}'".format(answerer_id)
+        result = db.execute_query(query)
+        return result
+
+    def select_query(self, query):
+        db = DBConnection()
+        result = db.execute_query(query)
+        return result
