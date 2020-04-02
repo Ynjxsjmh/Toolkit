@@ -1,7 +1,19 @@
+import logging
 import MySQLdb as connector
 from singleton_decorator import singleton
 import traceback
 import sys
+
+logger = logging.getLogger(__name__)
+logger.setLevel(level=logging.DEBUG)
+
+# Formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# FileHandler
+file_handler = logging.FileHandler('result.log')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 @singleton
@@ -33,12 +45,14 @@ class DBConnection(object):
             self.dbCursor.execute(query)
             result = self.dbCursor.fetchall()
         except connector.IntegrityError as e:
+            logger.error('Faild to execute %s', query, exc_info=True)
             if "Duplicate entry" in str(e) and "PRIMARY" in str(e):
                 pass
             else:
                 traceback.print_exc()
                 sys.exit()
         except Exception:
+            logger.error('Faild to execute %s', query, exc_info=True)
             print(sys.exc_info()[0])
             traceback.print_exc()
             sys.exit()
