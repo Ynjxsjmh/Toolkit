@@ -1,4 +1,5 @@
 from icourse163.utils.db_connection import DBConnection
+from icourse163.utils.util import unicode_normalize
 
 
 class PostDao(object):
@@ -31,7 +32,7 @@ class PostDao(object):
         param.append(post.lector_or_assist_flag)
         param.append(post.has_vote_up)
         param.append(post.deleted)
-        param.append(post.short_introduction)
+        param.append(unicode_normalize(post.short_introduction));
         param.append(post.pictures)
         param.append(post.post_source)
         param.append(post.course_id)
