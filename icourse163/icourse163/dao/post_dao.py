@@ -41,7 +41,6 @@ class PostDao(object):
         param.append(post.term_id)
         param.append(post.start_time)
         param.append(post.end_time)
-        param.append(post.term_id)
         param.append(post.close_visable_status)
         param.append(post.term_price)
         param.append(post.forum_id)
