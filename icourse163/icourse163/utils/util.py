@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 import re
+import sys
 import json
 import inflection
 import traceback
+import unicodedata
 from statistics import mode, StatisticsError
+
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
 
 
 # https://stackoverflow.com/questions/16058065
@@ -18,12 +25,27 @@ def raw_unicode_escape(string: str) -> str:
     string = string.replace("'", "\"")
     try:
         result = json.loads('{}'.format(string))
-    except AttributeError:
+    except (AttributeError, JSONDecodeError):
         try:
             result = json.loads('"{}"'.format(string))
-        except AttributeError:
+        except  (AttributeError, JSONDecodeError):
             traceback.print_exc()
+            sys.exit()
+        except Exception:
+            traceback.print_exc()
+            sys.exit()
+
     return result
+
+
+def unicode_normalize(string: str) -> str:
+    string = string.replace("'", "\'")
+    string = unicodedata.normalize("NFKD", string)
+
+    if len(string) > 3 and string[-1] == '\\' and string[-2] != '\\':
+        string += '\\'
+
+    return string
 
 
 def camel_to_snake(name: str) -> str:
