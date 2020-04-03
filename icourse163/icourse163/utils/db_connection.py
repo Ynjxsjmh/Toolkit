@@ -38,21 +38,24 @@ class DBConnection(object):
     def get_connection(self):
         return self.dbConnection
 
-    def execute_query(self, query):
+    def execute_query(self, query, param_list=[]):
         result = None
 
         try:
-            self.dbCursor.execute(query)
+            if len(param_list) > 0:
+                self.dbCursor.execute(query, tuple(param_list))
+            else:
+                self.dbCursor.execute(query)
             result = self.dbCursor.fetchall()
         except connector.IntegrityError as e:
             if "Duplicate entry" in str(e) and "PRIMARY" in str(e):
                 pass
             else:
-                logger.error('Faild to execute %s', query, exc_info=True)
+                logger.error('Faild to execute %s %s', query, param_list, exc_info=True)
                 traceback.print_exc()
                 sys.exit()
         except Exception:
-            logger.error('Faild to execute %s', query, exc_info=True)
+            logger.error('Faild to execute %s %s', query, param_list, exc_info=True)
             print(sys.exc_info()[0])
             traceback.print_exc()
             sys.exit()
