@@ -21,6 +21,7 @@ class CommentDao(object):
         param.append(comment.post_time)
         param.append(unicode_normalize(comment.parent_content))
         param.append(unicode_normalize(comment.plain_parent_content))
+        param.append(comment.parent_content_deleted)
         param.append(comment.poster_name)
         param.append(comment.poster_id)
         param.append(comment.post_source)
@@ -36,9 +37,9 @@ class CommentDao(object):
         param.append(comment.school_sn)
         param.append(comment.is_anonymous)
 
-        query = "INSERT INTO comment (id, forumId, postId, replyId, floorNumber, pageIndex, content, plainContent, postTime, parentContent, plainParentContent, parentContentDeleted, posterName, posterId, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, schoolSN, isAnonymous) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}');".format(*param)
+        query = "INSERT INTO comment (id, forumId, postId, replyId, floorNumber, pageIndex, content, plainContent, postTime, parentContent, plainParentContent, parentContentDeleted, posterName, posterId, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, schoolSN, isAnonymous) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
-        result = db.execute_query(query)
+        result = db.execute_query(query, param)
         db.commit()
 
         return result
