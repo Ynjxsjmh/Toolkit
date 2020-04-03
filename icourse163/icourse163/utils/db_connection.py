@@ -45,10 +45,10 @@ class DBConnection(object):
             self.dbCursor.execute(query)
             result = self.dbCursor.fetchall()
         except connector.IntegrityError as e:
-            logger.error('Faild to execute %s', query, exc_info=True)
             if "Duplicate entry" in str(e) and "PRIMARY" in str(e):
                 pass
             else:
+                logger.error('Faild to execute %s', query, exc_info=True)
                 traceback.print_exc()
                 sys.exit()
         except Exception:
