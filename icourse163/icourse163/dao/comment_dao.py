@@ -12,7 +12,7 @@ class CommentDao(object):
         param.append(comment.id)
         param.append(comment.forum_id)
         param.append(comment.post_id)
-        param.append(comment.comment_id)
+        param.append(comment.reply_id)
         param.append(comment.floor_number)
         param.append(comment.page_index)
         param.append(comment.content)
@@ -23,7 +23,7 @@ class CommentDao(object):
         param.append(comment.parent_content_deleted)
         param.append(comment.poster_name)
         param.append(comment.poster_id)
-        param.append(comment.poster_source)
+        param.append(comment.post_source)
         param.append(comment.course_id)
         param.append(comment.course_product_type)
         param.append(comment.course_mode)
@@ -36,7 +36,7 @@ class CommentDao(object):
         param.append(comment.school_sn)
         param.append(comment.is_anonymous)
 
-        query = "INSERT INTO comment (id, forumId, postId, commentId, floorNumber, pageIndex, content, plainContent, postTime, parentContent, plainParentContent, parentContentDeleted, posterName, posterId, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, schoolSN, isAnonymous) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}');".format(*param)
+        query = "INSERT INTO comment (id, forumId, postId, replyId, floorNumber, pageIndex, content, plainContent, postTime, parentContent, plainParentContent, parentContentDeleted, posterName, posterId, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, schoolSN, isAnonymous) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}');".format(*param)
 
         result = db.execute_query(query)
         db.commit()
