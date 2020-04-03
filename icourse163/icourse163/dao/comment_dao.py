@@ -1,4 +1,5 @@
 from icourse163.utils.db_connection import DBConnection
+from icourse163.utils.util import unicode_normalize
 
 
 class CommentDao(object):
@@ -15,12 +16,11 @@ class CommentDao(object):
         param.append(comment.reply_id)
         param.append(comment.floor_number)
         param.append(comment.page_index)
-        param.append(comment.content)
-        param.append(comment.plain_content)
+        param.append(unicode_normalize(comment.content))
+        param.append(unicode_normalize(comment.plain_content))
         param.append(comment.post_time)
-        param.append(comment.parent_content)
-        param.append(comment.plain_parent_content)
-        param.append(comment.parent_content_deleted)
+        param.append(unicode_normalize(comment.parent_content))
+        param.append(unicode_normalize(comment.plain_parent_content))
         param.append(comment.poster_name)
         param.append(comment.poster_id)
         param.append(comment.post_source)
