@@ -2,12 +2,16 @@ import re
 import json
 import random
 
+from icourse163.utils.util import camel_to_snake
 from icourse163.utils.login import get_login_session
 from icourse163.utils.util import raw_unicode_escape
 from icourse163.utils.util import get_key_value
 
 from icourse163.domain.term import Term
 from icourse163.domain.test import Test
+from icourse163.domain.post import Post
+from icourse163.domain.reply import Reply
+from icourse163.domain.comment import Comment
 from icourse163.domain.answer import Answer
 from icourse163.domain.course import Course
 from icourse163.domain.member import Member
@@ -19,6 +23,9 @@ from icourse163.domain.question_submit_record import QuestionSubmitRecord
 
 from icourse163.dao.term_dao import TermDao
 from icourse163.dao.test_dao import TestDao
+from icourse163.dao.post_dao import PostDao
+from icourse163.dao.reply_dao import ReplyDao
+from icourse163.dao.comment_dao import CommentDao
 from icourse163.dao.answer_dao import AnswerDao
 from icourse163.dao.course_dao import CourseDao
 from icourse163.dao.member_dao import MemberDao
@@ -252,6 +259,7 @@ def save_case_result(test_id, answer_id):
             result["caseId"]
             result["usedMemory"]
             result["passs"] = result["pass"]
+            result["tips"] = raw_unicode_escape(result["tips"])
             result["testId"] = test_id
             result["answerId"] = answer_id
             print(result)
@@ -334,6 +342,133 @@ def save_answer_detail(test_id, answer_id):
             answerDetailDao.save(answerDetail)
         except KeyError:
             pass
+
+
+def save_user_post(user_id):
+    def save_response(response):
+        postDao = PostDao()
+
+        for post in response["result"]["postsList"]:
+            if post["lastReplyer"] == None or len(post["lastReplyer"]) <= 0:
+                post["lastReplyerId"] = -1
+            else:
+                post["lastReplyerId"] = post["lastReplyer"]["id"]
+                post["posterId"] = post["poster"]["id"]
+                post_obj = Post(post)
+                postDao.save(post_obj)
+
+    request_user_post_url = "http://www.icourse163.org/web/j/MocPostRpcBean.getPostByUserId.rpc?csrfKey={}".format(http_session_id)
+
+    form_data = {
+        "p": 1,
+        "psize": 20,
+        "userId": user_id,
+        "isOfficerPage": 0,
+    }
+
+    response = session.post(url=request_user_post_url, data=form_data).text
+    response = json.loads(response)
+    save_response(response)
+
+    if response["result"]["pagination"] is not None:
+        total_page = response["result"]["pagination"]["totlePageCount"]
+
+        for page in range(2, (total_page+1)):
+            form_data = {
+                "p": page,
+                "psize": 20,
+                "userId": user_id,
+                "isOfficerPage": 0,
+            }
+
+            response = session.post(url=request_user_post_url, data=form_data).text
+            response = json.loads(response)
+
+            save_response(response)
+
+    else:
+        print("User {} doesn't have post now".format(user_id))
+
+
+def save_user_reply(user_id):
+    def save_response(response):
+        replyDao = ReplyDao()
+
+        for reply in response["result"]["replyList"]:
+            reply_obj = Reply(reply)
+            replyDao.save(reply_obj)
+
+
+    request_user_reply_url = "http://www.icourse163.org/web/j/MocPostRpcBean.getReplyByUserId.rpc?csrfKey={}".format(http_session_id)
+
+    form_data = {
+        "p": 1,
+        "psize": 20,
+        "userId": user_id,
+        "isOfficerPage": 0,
+    }
+
+    response = session.post(url=request_user_reply_url, data=form_data).text
+    response = json.loads(response)
+    save_response(response)
+
+    if response["result"]["pagination"] is not None:
+        total_page = response["result"]["pagination"]["totlePageCount"]
+
+        for page in range(2, (total_page+1)):
+            form_data = {
+                "p": page,
+                "psize": 20,
+                "userId": user_id,
+                "isOfficerPage": 0,
+            }
+
+            response = session.post(url=request_user_reply_url, data=form_data).text
+            response = json.loads(response)
+            save_response(response)
+
+    else:
+        print("User {} doesn't have reply now".format(user_id))
+
+
+def save_user_comment(user_id):
+    def save_response(response):
+        commentDao = CommentDao()
+
+        for comment in response["result"]["commentList"]:
+            comment_obj = Comment(comment)
+            commentDao.save(comment_obj)
+
+    request_user_comment_url = "http://www.icourse163.org/web/j/MocPostRpcBean.getCommentByUserId.rpc?csrfKey={}".format(http_session_id)
+
+    form_data = {
+        "p": 1,
+        "psize": 20,
+        "userId": user_id,
+        "isOfficerPage": 0,
+    }
+
+    response = session.post(url=request_user_comment_url, data=form_data).text
+    response = json.loads(response)
+    save_response(response)
+
+    if response["result"]["pagination"] is not None:
+        total_page = response["result"]["pagination"]["totlePageCount"]
+
+        for page in range(2, (total_page+1)):
+            form_data = {
+                "p": page,
+                "psize": 20,
+                "userId": user_id,
+                "isOfficerPage": 0,
+            }
+
+            response = session.post(url=request_user_comment_url, data=form_data).text
+            response = json.loads(response)
+            save_response(response)
+
+    else:
+        print("User {} doesn't have comment now".format(user_id))
 
 
 if __name__ == "__main__":
