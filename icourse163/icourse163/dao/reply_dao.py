@@ -1,4 +1,5 @@
 from icourse163.utils.db_connection import DBConnection
+from icourse163.utils.util import unicode_normalize
 
 
 class ReplyDao(object):
@@ -15,15 +16,15 @@ class ReplyDao(object):
         param.append(reply.reply_id)
         param.append(reply.floor_number)
         param.append(reply.page_index)
-        param.append(reply.content)
-        param.append(reply.plain_content)
+        param.append(unicode_normalize(reply.content))
+        param.append(unicode_normalize(reply.plain_content))
         param.append(reply.post_time)
-        param.append(reply.parent_content)
-        param.append(reply.plain_parent_content)
+        param.append(unicode_normalize(reply.parent_content))
+        param.append(unicode_normalize(reply.plain_parent_content))
         param.append(reply.parent_content_deleted)
         param.append(reply.poster_name)
         param.append(reply.poster_id)
-        param.append(reply.poster_source)
+        param.append(reply.post_source)
         param.append(reply.course_id)
         param.append(reply.course_product_type)
         param.append(reply.course_mode)
@@ -36,9 +37,10 @@ class ReplyDao(object):
         param.append(reply.school_sn)
         param.append(reply.is_anonymous)
 
-        query = "INSERT INTO reply (id, forumId, postId, replyId, floorNumber, pageIndex, content, plainContent, postTime, parentContent, plainParentContent, parentContentDeleted, posterName, posterId, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, schoolSN, isAnonymous) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}');".format(*param)
+#        query = "INSERT INTO reply (id, forumId, postId, replyId, floorNumber, pageIndex, content, plainContent, postTime, parentContent, plainParentContent, parentContentDeleted, posterName, posterId, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, schoolSN, isAnonymous) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}');".format(*param)
+        query = "INSERT INTO reply (id, forumId, postId, replyId, floorNumber, pageIndex, content, plainContent, postTime, parentContent, plainParentContent, parentContentDeleted, posterName, posterId, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, schoolSN, isAnonymous) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
-        result = db.execute_query(query)
+        result = db.execute_query(query, param)
         db.commit()
 
         return result

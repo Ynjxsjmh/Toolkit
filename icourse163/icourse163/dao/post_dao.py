@@ -13,7 +13,7 @@ class PostDao(object):
         param.append(post.id)
         param.append(post.type)
         param.append(post.post_time)
-        param.append(post.title)
+        param.append(unicode_normalize(post.title))
         param.append(post.anonymous)
         param.append(post.tag_agree)
         param.append(post.tag_top)
@@ -47,9 +47,11 @@ class PostDao(object):
         param.append(post.forum_id)
         param.append(post.school_sn)
 
-        query = "INSERT INTO post (id, type, postTime, title, anonymous, tagAgree, tagTop, tagTopTime, tagSolve, tagLector, countBrowse, countReply, countVote, lastReplyTime, lastReplyerId, posterId, relateUnit, unreadCount, content, lectorOrAssistFlag, hasVoteUp, deleted, shortIntroduction, pictures, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, forumId, schoolSN) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}', '{26}', '{27}', '{28}', '{29}', '{30}', '{31}', '{32}', '{33}', '{34}', '{35}');".format(*param)
+#        query = "INSERT INTO post (id, type, postTime, title, anonymous, tagAgree, tagTop, tagTopTime, tagSolve, tagLector, countBrowse, countReply, countVote, lastReplyTime, lastReplyerId, posterId, relateUnit, unreadCount, content, lectorOrAssistFlag, hasVoteUp, deleted, shortIntroduction, pictures, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, forumId, schoolSN) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}', '{25}', '{26}', '{27}', '{28}', '{29}', '{30}', '{31}', '{32}', '{33}', '{34}', '{35}');".format(*param)
+#        query = "INSERT INTO post (id, type, postTime, title, anonymous, tagAgree, tagTop, tagTopTime, tagSolve, tagLector, countBrowse, countReply, countVote, lastReplyTime, lastReplyerId, posterId, relateUnit, unreadCount, content, lectorOrAssistFlag, hasVoteUp, deleted, shortIntroduction, pictures, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, forumId, schoolSN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+        query = "INSERT INTO post (id, type, postTime, title, anonymous, tagAgree, tagTop, tagTopTime, tagSolve, tagLector, countBrowse, countReply, countVote, lastReplyTime, lastReplyerId, posterId, relateUnit, unreadCount, content, lectorOrAssistFlag, hasVoteUp, deleted, shortIntroduction, pictures, postSource, courseId, courseProductType, courseMode, courseChannel, termId, startTime, endTime, closeVisableStatus, termPrice, forumId, schoolSN) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
-        result = db.execute_query(query)
+        result = db.execute_query(query, param)
         db.commit()
 
         return result
