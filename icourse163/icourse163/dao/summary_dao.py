@@ -58,3 +58,8 @@ class SummaryDao(object):
         result = db.execute_query(query)
 
         return result
+
+    def select_query(self, query):
+        db = DBConnection()
+        result = db.execute_query(query)
+        return result
